@@ -1,0 +1,22 @@
+{
+  "type": "FeatureCollection",
+  "name": "evros_border",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Evros land border (operational AOI)",
+        "name_el": "Έβρος — επιχειρησιακή περιοχή",
+        "watch_region": "evros",
+        "bbox": [25.8, 40.8, 26.8, 42.2],
+        "note": "Bounding box around the Greek-Turkish land border along the Evros river. Operational AOI only."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [25.8, 40.8], [26.8, 40.8], [26.8, 42.2], [25.8, 42.2], [25.8, 40.8]
+        ]]
+      }
+    }
+  ]
+}

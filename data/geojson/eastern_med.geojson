@@ -1,0 +1,22 @@
+{
+  "type": "FeatureCollection",
+  "name": "eastern_med",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Eastern Mediterranean (operational AOI)",
+        "name_el": "Ανατολική Μεσόγειος — επιχειρησιακή περιοχή",
+        "watch_region": "eastern_med",
+        "bbox": [20.0, 30.0, 37.0, 38.0],
+        "note": "Wide bbox covering southern Aegean, Cyprus, Levantine basin, and Egyptian coast. Operational AOI only."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [20.0, 30.0], [37.0, 30.0], [37.0, 38.0], [20.0, 38.0], [20.0, 30.0]
+        ]]
+      }
+    }
+  ]
+}

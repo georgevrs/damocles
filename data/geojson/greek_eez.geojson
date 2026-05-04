@@ -1,0 +1,46 @@
+{
+  "type": "FeatureCollection",
+  "name": "greek_eez",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Greek EEZ — operational outline",
+        "name_el": "ΑΟΖ Ελλάδας — επιχειρησιακό περίγραμμα",
+        "watch_region": "aegean",
+        "note": "Coarse polygon for map display only. NOT a legal EEZ delimitation. Greece's actual EEZ is partially undeclared and disputed in places. Replace with an authoritative dataset (e.g. marineregions.org Maritime Boundaries v12) for production use."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [19.30, 35.80],
+          [21.60, 34.50],
+          [23.50, 34.20],
+          [25.00, 34.20],
+          [27.30, 34.50],
+          [28.80, 34.80],
+          [29.20, 35.50],
+          [29.20, 36.20],
+          [28.50, 36.30],
+          [27.30, 36.40],
+          [27.20, 37.10],
+          [27.10, 37.50],
+          [26.80, 38.20],
+          [26.60, 38.80],
+          [26.40, 39.50],
+          [26.10, 40.20],
+          [25.50, 40.30],
+          [24.50, 40.30],
+          [23.50, 40.30],
+          [22.50, 40.30],
+          [21.50, 40.10],
+          [20.50, 39.50],
+          [19.50, 39.00],
+          [19.20, 38.00],
+          [19.20, 37.00],
+          [19.30, 35.80]
+        ]]
+      }
+    }
+  ]
+}

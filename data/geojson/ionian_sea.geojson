@@ -1,0 +1,22 @@
+{
+  "type": "FeatureCollection",
+  "name": "ionian_sea",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ionian Sea (operational AOI)",
+        "name_el": "Ιόνιο Πέλαγος",
+        "watch_region": "ionian",
+        "bbox": [19.0, 36.0, 23.5, 41.0],
+        "note": "Operational bounding box, not a legal maritime boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [19.0, 36.0], [23.5, 36.0], [23.5, 41.0], [19.0, 41.0], [19.0, 36.0]
+        ]]
+      }
+    }
+  ]
+}

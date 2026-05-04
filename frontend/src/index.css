@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* MapLibre base — keep above tailwind so .maplibregl-* defaults apply */
+@import "maplibre-gl/dist/maplibre-gl.css";
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  background: #0b0f17;
+  color: #e2e8f0;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* MapLibre attribution + nav controls — tweak for the dark theme */
+.maplibregl-ctrl-attrib {
+  background: rgba(11, 15, 23, 0.7) !important;
+  color: #94a3b8 !important;
+  font-size: 10px !important;
+  padding: 1px 6px !important;
+}
+.maplibregl-ctrl-attrib a {
+  color: #cbd5e1 !important;
+}
+.maplibregl-ctrl button {
+  background-color: #101522 !important;
+  border-color: #1c2433 !important;
+}
+.maplibregl-ctrl button:hover {
+  background-color: #1c2433 !important;
+}
+.maplibregl-ctrl-group {
+  background: transparent !important;
+  border: 1px solid #1c2433 !important;
+}
+
+/* Scrollbar — subtle on dark */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0b0f17; }
+::-webkit-scrollbar-thumb { background: #1c2433; border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: #2a3447; }
+
+/* Brief skeleton — dim shimmer while the pipeline runs */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg,
+    rgba(28, 36, 51, 0.4) 0%,
+    rgba(56, 67, 88, 0.55) 50%,
+    rgba(28, 36, 51, 0.4) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+/* Dark-vessel pulse ring — the demo's headline visual cue.
+   Used by the MapPanel's circle-radius/blur driver via a CSS class on
+   an absolutely-positioned overlay div anchored to the marker pixel. */
+@keyframes ping-ring {
+  0%   { transform: scale(0.6); opacity: 0.9; }
+  80%  { transform: scale(2.4); opacity: 0; }
+  100% { transform: scale(2.4); opacity: 0; }
+}

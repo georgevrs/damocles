@@ -1,0 +1,74 @@
+# ─── Secrets & credentials ──────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.session            # Telegram session files contain auth tokens
+*.session-journal
+*credentials*.json   # GCP / Google service-account keys
+*service-account*.json
+*.pem
+*.key
+secrets/
+.secrets/
+
+# ─── Claude Code / IDE state (user-specific, NOT project) ───────────
+.claude/
+memory/
+.cursor/
+.aider*
+
+# ─── Python ─────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+
+# ─── uv ─────────────────────────────────────────────────────────────
+.uv/
+
+# ─── Node / Vite ────────────────────────────────────────────────────
+node_modules/
+dist/
+.vite/
+
+# ─── Neo4j data (Docker volume bind-mount) ──────────────────────────
+docker/neo4j/neo4j_data/
+docker/neo4j/neo4j_logs/
+
+# ─── DuckDB live database (operational data, not source) ───────────
+data/*.duckdb
+data/*.duckdb.wal
+data/*.duckdb.tmp/
+
+# ─── Data caches (re-fetched on demand) ─────────────────────────────
+data/cache/
+data/sample/*.tif
+data/sample/*.geotiff
+data/sample/*.csv
+
+# ─── Audit log (live, append-only Merkle chain — operational data) ──
+audit_log.jsonl
+audit_log.*.jsonl
+
+# ─── Models (Ollama is external; spaCy auto-installs) ───────────────
+models/*.bin
+models/*.gguf
+models/*.safetensors
+
+# ─── OS / IDE ───────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ─── Logs ────────────────────────────────────────────────────────────
+logs/
+*.log
