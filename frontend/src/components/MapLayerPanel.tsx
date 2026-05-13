@@ -8,7 +8,9 @@ import { useT } from "../i18n/useT";
 
 export default function MapLayerPanel() {
   const { t } = useT();
-  const [open, setOpen] = useState(true);
+  // Default closed — open by default ate ~30% of the map (E2E §6).
+  // The analyst's first impression should be the map, not a control panel.
+  const [open, setOpen] = useState(false);
   const layers = useDamocles((s) => s.mapLayers);
   const setLayer = useDamocles((s) => s.setLayer);
 

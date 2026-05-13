@@ -45,6 +45,10 @@ docker/neo4j/neo4j_logs/
 data/*.duckdb
 data/*.duckdb.wal
 data/*.duckdb.tmp/
+# pitch-day snapshot — operational vessel positions, large binary
+data/*.duckdb.demo
+# rollback backups taken by DEMO_RESTORE flow
+data/*.duckdb.bak
 
 # ─── Data caches (re-fetched on demand) ─────────────────────────────
 data/cache/
@@ -55,6 +59,8 @@ data/sample/*.csv
 # ─── Audit log (live, append-only Merkle chain — operational data) ──
 audit_log.jsonl
 audit_log.*.jsonl
+# on-disk tamper backup, written by /api/audit/_tamper
+audit_log.jsonl.demobak
 
 # ─── Models (Ollama is external; spaCy auto-installs) ───────────────
 models/*.bin
@@ -72,3 +78,9 @@ Thumbs.db
 # ─── Logs ────────────────────────────────────────────────────────────
 logs/
 *.log
+
+# ─── Test / demo artefacts (regenerable, not source) ────────────────
+screenshots/
+screenshots_*/
+# debug + state dumps emitted by scripts/
+docs/_*.json

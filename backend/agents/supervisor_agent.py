@@ -77,19 +77,10 @@ class SupervisorAgent(BaseAgent):
         the AoI as the first BLUF citation so the frontend can link the BLUF
         directly to the polygon on the map (see prompts/supervisor.txt).
         """
-        rows = await self.graph.run(
-            """
-            MATCH (ce:CompositeEvent {id: $id})
-            OPTIONAL MATCH (ce)-[:COMPOSED_OF]->(source)
-            RETURN ce, collect({type: labels(source)[0], props: source}) AS sources
-            """,
-            id=composite_event_id,
-        )
-        if not rows or not rows[0].get("ce"):
-            raise ValueError(f"CompositeEvent {composite_event_id!r} not found")
-
-        ce = rows[0]["ce"]
-        sources_raw = [s for s in (rows[0]["sources"] or []) if s and s.get("type")]
+        # Neo4j first → DuckDB fallback (so the demo box works without docker).
+        # Shared helper handles both branches transparently.
+        from ._context import fetch_ce_with_sources
+        ce, sources_raw = await fetch_ce_with_sources(self.graph, composite_event_id)
 
         valid_ids: list[str] = [ce["id"]]
         sources_compact: list[dict] = []

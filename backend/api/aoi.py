@@ -360,17 +360,34 @@ async def aoi_dna(aoi_id: str) -> dict[str, Any]:
 # AoI ID injected into the Supervisor context so the BLUF cites aoi://<id>.
 
 @router.post("/{aoi_id}/brief")
-async def generate_aoi_brief(aoi_id: str, request: Request) -> dict[str, Any]:
+async def generate_aoi_brief(
+    aoi_id: str,
+    request: Request,
+    force: bool = Query(False, description="Skip the canonical cache and re-generate live"),
+) -> dict[str, Any]:
     """Generate (or re-generate) an intelligence brief scoped to this AoI.
 
     Picks the top composite by (threat_grade × confidence) and runs the
     full agent pipeline. The supervisor receives the AoI id so the BLUF's
     first citation is the polygon itself.
+
+    A pre-baked canonical brief in ``aoi_canonical_brief`` is served
+    instantly when present (the demo's latency hedge). Pass ``force=true``
+    to bypass the cache and re-generate.
     """
     store = get_store()
     aoi = store.get_aoi(aoi_id)
     if aoi is None:
         raise HTTPException(status_code=404, detail="AoI not found")
+
+    # Cache hit short-circuits the 4-agent pipeline. The cached payload
+    # already has the flat {sections: [...]} shape the frontend expects.
+    if not force:
+        cached = store.get_canonical_brief(aoi_id)
+        if cached is not None:
+            log.info("AoI brief: serving canonical for %s (cached at %s)",
+                     aoi_id, cached.get("generated_at"))
+            return cached
 
     composite_ids = list(aoi.citation_event_ids or [])
     if not composite_ids:
@@ -447,7 +464,62 @@ async def generate_aoi_brief(aoi_id: str, request: Request) -> dict[str, Any]:
     except Exception:
         log.exception("ingest_brief failed for AoI %s (returning brief anyway)", aoi_id)
 
-    return brief.model_dump(mode="json")
+    # Flatten to the {summary, sections: [...]} shape the frontend's BriefPanel
+    # and AoITabbed expect (matches GET /api/briefs/{id}). The raw Pydantic
+    # serialisation keeps bluf/key_judgments/etc. as separate fields, which
+    # the SectionCard loop can't iterate over.
+    sections: list[dict[str, Any]] = []
+    sections.append(brief.bluf.model_dump(mode="json"))
+    sections.extend(s.model_dump(mode="json") for s in brief.key_judgments)
+    sections.extend(s.model_dump(mode="json") for s in brief.supporting_evidence)
+    if brief.devils_advocate is not None:
+        sections.append(brief.devils_advocate.model_dump(mode="json"))
+    if brief.recommendation is not None:
+        sections.append(brief.recommendation.model_dump(mode="json"))
+
+    return {
+        "id":         brief.id,
+        "watch_id":   brief.watch_id,
+        "created_at": brief.created_at.isoformat() if brief.created_at else None,
+        "metadata":   brief.metadata,
+        "sections":   sections,
+    }
+
+
+# ────────────────────── canonical brief management ──────────────────────
+
+class _PromoteBriefBody(BaseModel):
+    notes: str | None = Field(default=None, max_length=400)
+
+
+@router.post("/{aoi_id}/brief/canonical")
+async def promote_to_canonical(aoi_id: str,
+                               request: Request,
+                               body: _PromoteBriefBody | None = None) -> dict[str, Any]:
+    """Generate a fresh brief and save it as the canonical version for this
+    AoI. Subsequent ``POST /api/aoi/{id}/brief`` will return it instantly
+    (no LLM call) until somebody clears or overwrites it.
+
+    Used by ``scripts/pre_cache_briefs.py`` to seed the demo machine.
+    """
+    notes = (body.notes if body else None) or "pre-cached by /brief/canonical endpoint"
+    brief = await generate_aoi_brief(aoi_id, request, force=True)
+    get_store().put_canonical_brief(aoi_id, brief, notes=notes)
+    log.info("canonical brief saved for AoI %s (sections=%d, notes=%r)",
+             aoi_id, len(brief.get("sections", [])), notes)
+    return {"aoi_id": aoi_id, "cached": True, "sections": len(brief.get("sections", []))}
+
+
+@router.get("/canonical/_list")
+async def list_canonical_briefs() -> dict[str, Any]:
+    """Inventory of pre-cached AoI briefs (for diagnostics + the pre-cache script)."""
+    return {"items": get_store().list_canonical_briefs()}
+
+
+@router.delete("/{aoi_id}/brief/canonical", status_code=204, response_class=Response)
+async def clear_canonical_brief(aoi_id: str) -> Response:
+    get_store().delete_canonical_brief(aoi_id)
+    return Response(status_code=204)
 
 
 # ──────────────────────────── helpers ──────────────────────────────

@@ -19,6 +19,7 @@ import type { BriefSection } from "../types";
 import AoITabbed from "./AoITabbed";
 import AoITriageList from "./AoITriageList";
 import VesselDetail from "./VesselDetail";
+import FlightDetail from "./FlightDetail";
 import CitableText from "./CitableText";
 import CitationExpansion from "./CitationExpansion";
 
@@ -131,6 +132,7 @@ export default function BriefPanel({ className }: { className?: string }) {
   const setActiveBrief = useDamocles((s) => s.setActiveBrief);
   const activeAoI      = useDamocles((s) => s.activeAoI);
   const activeVessel   = useDamocles((s) => s.activeVessel);
+  const activeFlight   = useDamocles((s) => s.activeFlight);
 
   const { data: briefSummaries } = useQuery({
     queryKey: ["briefs", activeWatch?.id],
@@ -170,10 +172,11 @@ export default function BriefPanel({ className }: { className?: string }) {
       <div className="flex-1 space-y-3 overflow-y-auto p-3">
         {/* Selection cards — pinned to the top whenever a vessel or AoI
             is active. Both can be active simultaneously (vessel inside AoI). */}
+        {activeFlight && <FlightDetail flight={activeFlight} />}
         {activeVessel && <VesselDetail vessel={activeVessel} />}
         {activeAoI    && <AoITabbed    aoi={activeAoI} />}
 
-        {!activeWatch && !activeAoI && !activeVessel && (
+        {!activeWatch && !activeAoI && !activeVessel && !activeFlight && (
           <AoITriageList />
         )}
         {activeWatch && !activeBrief && <BriefSkeleton />}

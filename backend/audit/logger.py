@@ -262,10 +262,21 @@ class MerkleAuditLogger:
         from_file = self._read_jsonl() if self.log_file else []
         from_graph: list[AuditEntry] = []
         if self.graph is not None:
-            rows = await self.graph.run(
-                "MATCH (a:AuditEntry) RETURN a ORDER BY a.timestamp ASC"
-            )
-            from_graph = [self._row_to_entry(r["a"]) for r in rows]
+            try:
+                rows = await self.graph.run(
+                    "MATCH (a:AuditEntry) RETURN a ORDER BY a.timestamp ASC"
+                )
+                from_graph = [self._row_to_entry(r["a"]) for r in rows]
+            except Exception as exc:
+                # Neo4j went away mid-session (Docker stopped, network blip).
+                # We fall through to the JSONL store rather than 500ing — the
+                # whole point of dual persistence is that either store is
+                # independently verifiable. The tradeoff is we lose
+                # cross-store consistency checking until Neo4j returns.
+                log.info(
+                    "MerkleAuditLogger.read_chain: Neo4j unreachable (%s) — using JSONL only",
+                    type(exc).__name__,
+                )
         # Prefer JSONL when both have entries — it's append-only, simpler,
         # and harder to silently corrupt. Tied lengths break to JSONL too.
         if len(from_file) >= len(from_graph):

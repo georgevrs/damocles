@@ -57,19 +57,10 @@ class DevilsAdvocateAgent(BaseAgent):
         The devil cites IDs from the composite + sources; the prior outputs
         are evidence in the prompt, not citation targets themselves.
         """
-        rows = await self.graph.run(
-            """
-            MATCH (ce:CompositeEvent {id: $id})
-            OPTIONAL MATCH (ce)-[:COMPOSED_OF]->(source)
-            RETURN ce, collect({type: labels(source)[0], props: source}) AS sources
-            """,
-            id=composite_event_id,
-        )
-        if not rows or not rows[0].get("ce"):
-            raise ValueError(f"CompositeEvent {composite_event_id!r} not found")
-
-        ce = rows[0]["ce"]
-        sources_raw = [s for s in (rows[0]["sources"] or []) if s and s.get("type")]
+        # Neo4j first → DuckDB fallback (shared helper) so the demo doesn't
+        # require docker.
+        from ._context import fetch_ce_with_sources
+        ce, sources_raw = await fetch_ce_with_sources(self.graph, composite_event_id)
 
         valid_ids: list[str] = [ce["id"]]
         sources_compact: list[dict] = []

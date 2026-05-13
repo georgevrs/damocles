@@ -7,11 +7,14 @@ GET /api/briefs?watch_id=...                         briefs for a watch
 from __future__ import annotations
 
 import json
+import logging
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
 
 from ._serialize import jsonable
+
+log = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/briefs", tags=["briefs"])
 
@@ -30,22 +33,50 @@ async def list_briefs_for_watch(watch_id: str, request: Request) -> list[dict]:
 
 @router.get("/{brief_id}")
 async def get_brief(brief_id: str, request: Request) -> dict[str, Any]:
-    """Return the Brief plus all of its BriefSections, ordered by section type."""
-    rows = await request.app.state.executor.graph.run(
-        """
-        MATCH (b:Brief {id: $brief_id})-[:CONTAINS]->(bs:BriefSection)
-        RETURN b, collect(bs) AS sections
-        """,
-        brief_id=brief_id,
-    )
-    if not rows or not rows[0].get("b"):
-        raise HTTPException(status_code=404, detail=f"brief {brief_id} not found")
+    """Return the Brief plus all of its BriefSections, ordered by section type.
 
-    b = dict(rows[0]["b"])
-    sections = [dict(s) for s in (rows[0]["sections"] or []) if s]
-    sections = [_section_to_dict(s) for s in sections]
-    sections.sort(key=_section_order)
-    return {**_brief_summary(b), "sections": sections}
+    Two-store lookup: Neo4j first, then DuckDB. Canonical briefs (W2-T3,
+    pre-baked for each RED AoI) live only in DuckDB because Neo4j may
+    not be running in the demo box's network configuration. Without the
+    DuckDB fallback, ``GET /api/briefs/{canonical_id}`` 404s even though
+    the same brief is served fine by ``POST /api/aoi/{aoi_id}/brief``.
+    """
+    try:
+        rows = await request.app.state.executor.graph.run(
+            """
+            MATCH (b:Brief {id: $brief_id})-[:CONTAINS]->(bs:BriefSection)
+            RETURN b, collect(bs) AS sections
+            """,
+            brief_id=brief_id,
+        )
+    except Exception as exc:
+        log.info("Neo4j unavailable (%s) — using DuckDB canonical-brief fallback",
+                 type(exc).__name__)
+        rows = []
+
+    if rows and rows[0].get("b"):
+        b = dict(rows[0]["b"])
+        sections = [dict(s) for s in (rows[0]["sections"] or []) if s]
+        sections = [_section_to_dict(s) for s in sections]
+        sections.sort(key=_section_order)
+        return {**_brief_summary(b), "sections": sections}
+
+    # DuckDB fallback — scan the canonical-brief cache by brief id.
+    from backend.store import get_store
+    store = get_store()
+    conn = store.connect()
+    rows_d = conn.execute(
+        "SELECT aoi_id, brief_json FROM aoi_canonical_brief"
+    ).fetchall()
+    for _aoi_id, payload in rows_d:
+        try:
+            d = json.loads(payload)
+        except (TypeError, json.JSONDecodeError):
+            continue
+        if d.get("id") == brief_id:
+            return d
+
+    raise HTTPException(status_code=404, detail=f"brief {brief_id} not found")
 
 
 @router.get("/{brief_id}/citation/{section_id}")
@@ -58,30 +89,47 @@ async def citation_chain(
     source's properties + map-highlight + graph-highlight payloads, and
     returns the corroboration chain (sibling sources of the parent
     CompositeEvent).
-    """
-    rows = await request.app.state.executor.graph.run(
-        """
-        MATCH (b:Brief {id: $brief_id})-[:CONTAINS]->(bs:BriefSection {id: $section_id})
-        OPTIONAL MATCH (bs)-[r:CITES]->(source)
-        OPTIONAL MATCH (source)<-[:COMPOSED_OF]-(ce:CompositeEvent)
-        OPTIONAL MATCH (ce)-[:COMPOSED_OF]->(sibling)
-        WHERE sibling <> source
-        RETURN bs, b,
-               collect(DISTINCT {type: labels(source)[0], cites: r.node_type, props: source}) AS sources,
-               collect(DISTINCT {type: labels(sibling)[0], props: sibling}) AS siblings
-        """,
-        brief_id=brief_id, section_id=section_id,
-    )
-    if not rows or not rows[0].get("bs"):
-        raise HTTPException(
-            status_code=404,
-            detail=f"section {section_id} not found in brief {brief_id}",
-        )
 
-    row = rows[0]
-    section_dict = _section_to_dict(dict(row["bs"]))
-    sources = [s for s in (row["sources"] or []) if s and s.get("type")]
-    siblings = [s for s in (row["siblings"] or []) if s and s.get("type")]
+    Tries Neo4j first (richest path), falls back to the DuckDB canonical
+    brief cache when Neo4j is unavailable. The fallback covers the demo
+    path: any canonical-cached brief has all its citations resolvable from
+    DuckDB alone.
+    """
+    section_dict: dict[str, Any] | None = None
+    sources: list[dict] = []
+    siblings: list[dict] = []
+
+    try:
+        rows = await request.app.state.executor.graph.run(
+            """
+            MATCH (b:Brief {id: $brief_id})-[:CONTAINS]->(bs:BriefSection {id: $section_id})
+            OPTIONAL MATCH (bs)-[r:CITES]->(source)
+            OPTIONAL MATCH (source)<-[:COMPOSED_OF]-(ce:CompositeEvent)
+            OPTIONAL MATCH (ce)-[:COMPOSED_OF]->(sibling)
+            WHERE sibling <> source
+            RETURN bs, b,
+                   collect(DISTINCT {type: labels(source)[0], cites: r.node_type, props: source}) AS sources,
+                   collect(DISTINCT {type: labels(sibling)[0], props: sibling}) AS siblings
+            """,
+            brief_id=brief_id, section_id=section_id,
+        )
+        if rows and rows[0].get("bs"):
+            row = rows[0]
+            section_dict = _section_to_dict(dict(row["bs"]))
+            sources = [s for s in (row["sources"] or []) if s and s.get("type")]
+            siblings = [s for s in (row["siblings"] or []) if s and s.get("type")]
+    except Exception as exc:
+        log.info("citation_chain: Neo4j unreachable (%s) — falling back to DuckDB cache",
+                 type(exc).__name__)
+
+    if section_dict is None:
+        # DuckDB-only fallback path
+        section_dict, sources, siblings = _resolve_citation_chain_from_duckdb(brief_id, section_id)
+        if section_dict is None:
+            raise HTTPException(
+                status_code=404,
+                detail=f"section {section_id} not found in brief {brief_id}",
+            )
 
     # Audit the analyst's read access — every citation click is on the chain.
     audit_logger = getattr(request.app.state, "audit", None)
@@ -136,6 +184,165 @@ def _section_to_dict(s: dict) -> dict:
         "agent_source":      s.get("agent_source", ""),
         "extra":             jsonable(extra),
     }
+
+
+def _resolve_citation_chain_from_duckdb(
+    brief_id: str, section_id: str,
+) -> tuple[dict[str, Any] | None, list[dict], list[dict]]:
+    """DuckDB-only citation-chain resolver. Powers the demo when Neo4j is down.
+
+    Strategy: every canonical brief in the cache has a flat ``sections``
+    array, each with citation_node_ids. We scan all canonical briefs for
+    the one containing this brief_id (or section_id), then resolve each
+    citation to a Vessel / NewsEvent / SocialSignal / AreaOfInterest /
+    CompositeEvent row in DuckDB.
+    """
+    from backend.store import get_store
+    store = get_store()
+    conn = store.connect()
+
+    # Find the canonical brief that contains this section
+    cached_briefs = conn.execute(
+        "SELECT aoi_id, brief_json FROM aoi_canonical_brief"
+    ).fetchall()
+    target_section: dict[str, Any] | None = None
+    parent_aoi_id: str | None = None
+    parent_brief: dict[str, Any] | None = None
+    for aoi_id, brief_json in cached_briefs:
+        try:
+            b = json.loads(brief_json) if isinstance(brief_json, str) else brief_json
+        except (TypeError, json.JSONDecodeError):
+            continue
+        if b.get("id") != brief_id:
+            continue
+        for s in (b.get("sections") or []):
+            if s.get("id") == section_id:
+                target_section = s
+                parent_aoi_id = aoi_id
+                parent_brief = b
+                break
+        if target_section: break
+    if target_section is None or parent_aoi_id is None:
+        return None, [], []
+
+    cite_ids = target_section.get("citation_node_ids", []) or []
+
+    # Resolve each citation_id to a typed source-event row.
+    # The IDs cover three classes:
+    #   - aoi-* : the parent AoI
+    #   - composite IDs (UUIDs) : composite_events rows
+    #   - source event IDs : raw_ais / raw_news / raw_social
+    source_nodes: list[dict] = []
+
+    # Pull the AoI if cited
+    for cid in cite_ids:
+        if cid.startswith("aoi-"):
+            aoi = store.get_aoi(cid)
+            if aoi:
+                source_nodes.append({
+                    "type":  "AreaOfInterest",
+                    "cites": "aoi",
+                    "props": {
+                        "id": aoi.id, "name_el": aoi.name_el, "name_en": aoi.name_en,
+                        "description": aoi.description,
+                        "centroid_lat": aoi.centroid_lat, "centroid_lon": aoi.centroid_lon,
+                        "threat_grade": aoi.threat_grade,
+                        "threat_summary": aoi.threat_summary,
+                        "source": aoi.source.value if hasattr(aoi.source, "value") else str(aoi.source),
+                        "polygon_wkt": aoi.polygon_wkt,
+                        "citation_event_ids": aoi.citation_event_ids,
+                    },
+                })
+
+    # Composites
+    non_aoi_ids = [c for c in cite_ids if not c.startswith("aoi-")]
+    if non_aoi_ids:
+        ph = ",".join(["?"] * len(non_aoi_ids))
+        for r in conn.execute(
+            f"SELECT id, threat_grade, confidence, summary, centroid_lat, centroid_lon, "
+            f"       source_node_ids_json "
+            f"FROM composite_events WHERE id IN ({ph})", non_aoi_ids,
+        ).fetchall():
+            # corroboration_count isn't a DuckDB column; derive it from source_node_ids_json
+            try:
+                src_count = len(json.loads(r[6] or "[]"))
+            except (TypeError, json.JSONDecodeError):
+                src_count = 0
+            source_nodes.append({
+                "type":  "CompositeEvent",
+                "cites": "composite",
+                "props": {
+                    "id": r[0], "threat_grade": r[1], "confidence": r[2],
+                    "summary": r[3], "centroid_lat": r[4], "centroid_lon": r[5],
+                    "corroboration_count": src_count,
+                },
+            })
+        # Vessel / News / Social by event_id
+        for r in conn.execute(
+            f"SELECT event_id, mmsi, lat, lon, vessel_name, flag, length_m, ais_status, ts, "
+            f"       NULL as sar_tile_id, NULL as dark_vessel_score "
+            f"FROM raw_ais WHERE event_id IN ({ph})", non_aoi_ids,
+        ).fetchall():
+            source_nodes.append({
+                "type":  "Vessel",
+                "cites": "vessel",
+                "props": {
+                    "id": r[0], "mmsi": r[1], "lat": r[2], "lon": r[3],
+                    "vessel_name": r[4], "flag": r[5], "length_m": r[6],
+                    "ais_status": r[7], "ts": r[8].isoformat() if r[8] else None,
+                },
+            })
+        for r in conn.execute(
+            f"SELECT event_id, lat, lon, headline, source_url, source_name, "
+            f"       goldstein_scale, mentions, language, ts "
+            f"FROM raw_news WHERE event_id IN ({ph})", non_aoi_ids,
+        ).fetchall():
+            source_nodes.append({
+                "type":  "NewsEvent",
+                "cites": "news",
+                "props": {
+                    "id": r[0], "lat": r[1], "lon": r[2],
+                    "headline": r[3], "source_url": r[4], "source_name": r[5],
+                    "goldstein_scale": r[6], "mentions": r[7], "language": r[8],
+                    "ts": r[9].isoformat() if r[9] else None,
+                },
+            })
+        for r in conn.execute(
+            f"SELECT event_id, channel, lat, lon, text, language, ts "
+            f"FROM raw_social WHERE event_id IN ({ph})", non_aoi_ids,
+        ).fetchall():
+            source_nodes.append({
+                "type":  "SocialSignal",
+                "cites": "social",
+                "props": {
+                    "id": r[0], "channel": r[1], "lat": r[2], "lon": r[3],
+                    "text": r[4], "language": r[5],
+                    "ts": r[6].isoformat() if r[6] else None,
+                },
+            })
+
+    # Build corroboration chain — the parent AoI's other composites
+    aoi = store.get_aoi(parent_aoi_id)
+    siblings: list[dict] = []
+    if aoi and aoi.citation_event_ids:
+        sibling_composite_ids = [c for c in aoi.citation_event_ids if c not in non_aoi_ids]
+        if sibling_composite_ids:
+            # Cap at 12 to keep the modal scannable
+            ph = ",".join(["?"] * min(12, len(sibling_composite_ids)))
+            for r in conn.execute(
+                f"SELECT id, threat_grade, confidence, summary, centroid_lat, centroid_lon "
+                f"FROM composite_events WHERE id IN ({ph}) LIMIT 12",
+                sibling_composite_ids[:12],
+            ).fetchall():
+                siblings.append({
+                    "type":  "CompositeEvent",
+                    "props": {
+                        "id": r[0], "threat_grade": r[1], "confidence": r[2],
+                        "summary": r[3], "centroid_lat": r[4], "centroid_lon": r[5],
+                    },
+                })
+
+    return target_section, source_nodes, siblings
 
 
 _SECTION_ORDER = {

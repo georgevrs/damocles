@@ -27,20 +27,12 @@ class OSINTAgent(BaseAgent):
         return _PROMPT_PATH.read_text(encoding="utf-8")
 
     async def fetch_context(self, composite_event_id: str, **_kwargs):
-        rows = await self.graph.run(
-            """
-            MATCH (ce:CompositeEvent {id: $id})
-            OPTIONAL MATCH (ce)-[:COMPOSED_OF]->(source)
-            WHERE source:NewsEvent OR source:SocialSignal
-            RETURN ce, collect({type: labels(source)[0], props: source}) AS sources
-            """,
-            id=composite_event_id,
-        )
-        if not rows or not rows[0].get("ce"):
-            raise ValueError(f"CompositeEvent {composite_event_id!r} not found")
-
-        ce = rows[0]["ce"]
-        sources_raw = [s for s in (rows[0]["sources"] or []) if s and s.get("type")]
+        # Neo4j first → DuckDB fallback via shared helper. Then filter to
+        # information-strand sources (News + Social) since OSINT doesn't
+        # reason over vessel detections directly.
+        from ._context import fetch_ce_with_sources
+        ce, all_sources = await fetch_ce_with_sources(self.graph, composite_event_id)
+        sources_raw = [s for s in all_sources if s["type"] in ("NewsEvent", "SocialSignal")]
 
         valid_ids: list[str] = [ce["id"]]
         sources_compact: list[dict] = []

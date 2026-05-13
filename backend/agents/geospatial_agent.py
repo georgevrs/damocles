@@ -34,21 +34,12 @@ class GeospatialAgent(BaseAgent):
         composite_event_id: str,
         **_kwargs,
     ) -> tuple[str, list[str]]:
-        """Pull the CompositeEvent + its sources, format as compact JSON-ish context."""
-        rows = await self.graph.run(
-            """
-            MATCH (ce:CompositeEvent {id: $id})
-            OPTIONAL MATCH (ce)-[:COMPOSED_OF]->(source)
-            RETURN ce, collect({type: labels(source)[0], props: source}) AS sources
-            """,
-            id=composite_event_id,
-        )
-        if not rows or not rows[0].get("ce"):
-            raise ValueError(f"CompositeEvent {composite_event_id!r} not found")
+        """Pull the CompositeEvent + its sources, format as compact JSON-ish context.
 
-        row = rows[0]
-        ce = row["ce"]
-        sources_raw = [s for s in (row["sources"] or []) if s and s.get("type")]
+        Uses the shared Neo4j-then-DuckDB helper so we don't depend on docker.
+        """
+        from ._context import fetch_ce_with_sources
+        ce, sources_raw = await fetch_ce_with_sources(self.graph, composite_event_id)
 
         valid_ids: list[str] = [ce["id"]]
         sources_compact: list[dict] = []

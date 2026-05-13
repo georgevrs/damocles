@@ -13,6 +13,20 @@ Given a set of CompositeEvents, this agent:
 This is *not* a citation-discipline agent (no AgentOutput contract). The
 naming step is small and bounded; we validate JSON shape but don't enforce
 citation_node_ids — the citations are the cluster member IDs themselves.
+
+Demo-readiness rules (post-AoI-quality-audit, May 2026):
+  - **Multi-source escalation gate.** A cluster whose member composites all
+    share a single source-type (e.g. only Vessel detections, no news,
+    no social) is capped at GREEN. The two-strands fusion story of the
+    platform is invalidated by AMBER/RED clusters with a single strand,
+    and the audit found 9/10 such monocultures in the random sample.
+  - **RED escalation rule.** ``fusion.py`` requires `distinct_sensors >= 3
+    AND has_dark AND high_signal` for RED, which is unreachable with the
+    current data (only Vessel + News sensors active, no Telegram/Flight).
+    The AoI agent overrides this for AI AoIs: a cluster gets RED when it
+    has multiple source-types AND a "dark + hot-news" pair anywhere in its
+    membership. Caller passes per-composite signal flags via the
+    ``composite_signals`` parameter.
 """
 from __future__ import annotations
 
@@ -64,7 +78,27 @@ class AoIAgent:
         composites: list[CompositeEvent],
         *,
         scan_id: str | None = None,
+        composite_source_types: dict[str, set[str]] | None = None,
+        composite_signals: dict[str, dict[str, bool]] | None = None,
     ) -> list[AoI]:
+        """Cluster composites and emit named AoIs.
+
+        ``composite_source_types`` (optional): map composite_id → set of
+        source-type labels ({'Vessel', 'NewsEvent', 'SocialSignal'}). When
+        provided, the multi-source escalation gate is applied — a cluster
+        whose union of source types has fewer than 2 entries is capped at
+        GREEN regardless of its worst constituent grade.
+
+        ``composite_signals`` (optional): map composite_id → flags dict
+        ({'has_dark', 'has_hot_news', ...}). When provided, a cluster gets
+        promoted to RED if it has BOTH ≥2 distinct source-types AND at
+        least one dark-vessel signal AND at least one hot-news signal
+        across its membership. This works around the unreachable RED
+        condition in fusion.py.
+
+        Both optional — when None, the corresponding gate is skipped
+        (legacy behaviour preserved).
+        """
         if not composites:
             return []
 
@@ -79,11 +113,54 @@ class AoIAgent:
 
         log.info("AoI: %d clusters from %d composites", len(clusters), len(composites))
         out: list[AoI] = []
+        gated_to_green = 0
+        promoted_to_red = 0
         for idx, members in clusters.items():
             polygon_wkt, centroid = _polygon_for(members, alpha=self.alpha)
             if polygon_wkt is None:
                 continue
             threat = _dominant_threat(members)
+
+            # Pre-compute cluster-level aggregates once
+            cluster_types: set[str] = set()
+            cluster_has_dark = False
+            cluster_has_hot_news = False
+            if composite_source_types is not None or composite_signals is not None:
+                for m in members:
+                    if composite_source_types is not None:
+                        cluster_types |= composite_source_types.get(m.id, set())
+                    if composite_signals is not None:
+                        flags = composite_signals.get(m.id, {})
+                        if flags.get("has_dark"):     cluster_has_dark = True
+                        if flags.get("has_hot_news"): cluster_has_hot_news = True
+
+            # RED promotion — applies BEFORE the GREEN demotion gate so a
+            # genuinely RED-grade cluster isn't accidentally demoted.
+            # Conditions: multi-source AND a dark-vessel AND a hot-news event
+            # appear somewhere in the cluster's membership. This is the
+            # "AIS-dark vessel confirmed by hostile-coded news" pattern the
+            # demo script promises.
+            if (composite_signals is not None
+                    and len(cluster_types) >= 2
+                    and cluster_has_dark
+                    and cluster_has_hot_news):
+                if threat != ThreatGrade.RED:
+                    log.debug("AoI cluster %d promoted %s→RED "
+                              "(multi-source dark+hot pattern)",
+                              idx, threat.value if threat else "GREEN")
+                threat = ThreatGrade.RED
+                promoted_to_red += 1
+
+            # Multi-source escalation gate — see module docstring §"Demo-readiness".
+            # Without ≥2 distinct source types in the cluster, the "fusion of
+            # two strands" claim is unfounded. Cap at GREEN.
+            elif composite_source_types is not None and threat in (ThreatGrade.AMBER, ThreatGrade.RED):
+                if len(cluster_types) < 2:
+                    log.debug("AoI cluster %d demoted %s→GREEN (single-strand: %s)",
+                              idx, threat.value, cluster_types or "{}")
+                    threat = ThreatGrade.GREEN
+                    gated_to_green += 1
+
             name_el, name_en, description = await self._name(idx, members, centroid, threat)
             out.append(
                 AoI(
@@ -102,6 +179,12 @@ class AoIAgent:
                     updated_at=datetime.now(timezone.utc),
                 )
             )
+        if gated_to_green:
+            log.info("AoI: multi-source gate demoted %d/%d clusters to GREEN",
+                     gated_to_green, len(clusters))
+        if promoted_to_red:
+            log.info("AoI: multi-source+dark+hot rule promoted %d/%d clusters to RED",
+                     promoted_to_red, len(clusters))
         return out
 
     # ──────────────────────────── naming ─────────────────────────────

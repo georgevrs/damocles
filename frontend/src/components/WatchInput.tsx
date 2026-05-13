@@ -5,23 +5,24 @@
 
 import { useState } from "react";
 import {
-  Anchor, ArrowLeft, MapPin, Plane, Radio, Search, Send, Loader2,
+  Anchor, ArrowLeft, MapPin, Plane, Play, Radio, Search, Send, Loader2,
   ShieldCheck, ShieldAlert,
   type LucideIcon,
 } from "lucide-react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { createWatch, fetchHealth, fetchWatchTemplates, verifyAuditChain } from "../api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createWatch, fetchHealth, fetchWatchTemplates, switchLlmProvider, verifyAuditChain } from "../api";
 import { useDamocles } from "../store/damocles";
 import { useT } from "../i18n/useT";
 import LangSwitch from "./LangSwitch";
 import StandingCoverageBadge from "./StandingCoverageBadge";
 import type { WatchTemplate } from "../types";
 
-// Where the landing page lives. Configurable at deploy time via
-// window.DAMOCLES_LANDING_URL; defaults to the Vite-equivalent dev port (5174).
+// Where the landing page lives. Served by the FastAPI backend at /landing/
+// (mounted in backend/main.py) and proxied through Vite so the same path
+// works in dev and prod. Override at deploy time via window.DAMOCLES_LANDING_URL.
 const LANDING_URL =
   (typeof window !== "undefined" && (window as { DAMOCLES_LANDING_URL?: string }).DAMOCLES_LANDING_URL) ||
-  "http://localhost:5174";
+  "/landing/";
 
 const ICONS: Record<string, LucideIcon> = {
   anchor:  Anchor,
@@ -86,6 +87,7 @@ export default function WatchInput() {
           <StandingCoverageBadge />
 
           <div className="ml-auto flex items-center gap-2">
+            <ScanCinemaButton />
             <SystemPill />
             <LangSwitch />
           </div>
@@ -154,6 +156,7 @@ export default function WatchInput() {
 // two free-floating badges.
 function SystemPill() {
   const { t } = useT();
+  const qc = useQueryClient();
   const { data: health } = useQuery({
     queryKey: ["health"],
     queryFn: fetchHealth,
@@ -166,6 +169,17 @@ function SystemPill() {
     refetchInterval: 15_000,
     staleTime: 10_000,
   });
+
+  // W3-T2: click the model segment to swap provider Gemini ↔ Ollama.
+  // The button only fires when health is loaded so we know which way to flip.
+  const swap = useMutation({
+    mutationFn: (target: "gemini" | "ollama") => switchLlmProvider(target),
+    onSettled: () => qc.invalidateQueries({ queryKey: ["health"] }),
+  });
+  const demoMode = health?.demo_mode === true;
+  const currentProvider = health?.llm?.provider as "gemini" | "ollama" | undefined;
+  const swapTarget: "gemini" | "ollama" =
+    currentProvider === "ollama" ? "gemini" : "ollama";
 
   const llmOk    = health?.llm?.ok === true;
   const llmModel = (health?.llm?.model ?? "").replace("gemini-", "") || "—";
@@ -187,15 +201,91 @@ function SystemPill() {
       title={verdict?.verdict ?? "system status"}
     >
       {health?.llm && (
-        <div className="flex items-center gap-1.5 px-2 py-0.5">
-          <span className={"h-1.5 w-1.5 rounded-full " + (llmOk ? "bg-emerald-400" : "bg-rose-400")} />
-          <span className="text-panel-text">{llmModel}</span>
-        </div>
+        demoMode ? (
+          <button
+            type="button"
+            onClick={() => swap.mutate(swapTarget)}
+            disabled={swap.isPending || !currentProvider}
+            className="flex items-center gap-1.5 px-2 py-0.5 hover:bg-panel-border/40 disabled:opacity-60"
+            title={`click to swap to ${swapTarget}`}
+          >
+            <span className={"h-1.5 w-1.5 rounded-full " + (llmOk ? "bg-emerald-400" : "bg-rose-400")} />
+            <span className="text-panel-text">{swap.isPending ? "swapping…" : llmModel}</span>
+          </button>
+        ) : (
+          <div className="flex items-center gap-1.5 px-2 py-0.5">
+            <span className={"h-1.5 w-1.5 rounded-full " + (llmOk ? "bg-emerald-400" : "bg-rose-400")} />
+            <span className="text-panel-text">{llmModel}</span>
+          </div>
+        )
       )}
       <div className={"flex items-center gap-1.5 px-2 py-0.5 " + auditTone}>
         <AuditIcon size={11} />
         <span>{auditLabel}</span>
       </div>
     </div>
+  );
+}
+
+// W3-T4 scan cinema button. Opens a WebSocket to /ws/scan-cinema and
+// drips the snapshot AoIs into the damocles store one feature at a time.
+// The MapPanel renders ``cinemaFeatures`` whenever ``cinemaActive`` is on,
+// so the polygons pop in as frames arrive. GREEN→AMBER→RED ordering on
+// the backend means the demo's six RED AoIs land last for the punchline.
+function ScanCinemaButton() {
+  const cinemaActive   = useDamocles((s) => s.cinemaActive);
+  const cinemaTotal    = useDamocles((s) => s.cinemaTotal);
+  const cinemaCount    = useDamocles((s) => s.cinemaFeatures.length);
+  const cinemaStart    = useDamocles((s) => s.cinemaStart);
+  const cinemaAdd      = useDamocles((s) => s.cinemaAddFeature);
+  const cinemaStop     = useDamocles((s) => s.cinemaStop);
+
+  function onClick() {
+    if (cinemaActive) {
+      cinemaStop();
+      return;
+    }
+    // Vite dev-server proxies /ws to the FastAPI backend (see vite.config.ts).
+    const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const ws = new WebSocket(`${proto}//${window.location.host}/ws/scan-cinema?delay_ms=160`);
+    ws.onmessage = (ev) => {
+      try {
+        const msg = JSON.parse(ev.data);
+        if (msg.type === "start") {
+          cinemaStart(msg.total ?? 0);
+        } else if (msg.type === "aoi" && msg.feature) {
+          cinemaAdd(msg.feature);
+        } else if (msg.type === "complete") {
+          ws.close();
+          // Hold the final frame for 1.2s so the audience reads RED,
+          // then let the cached aoi query take back over seamlessly
+          // (same features, no visual diff).
+          window.setTimeout(() => cinemaStop(), 1200);
+        }
+      } catch { /* malformed frame — ignore */ }
+    };
+    ws.onerror = () => cinemaStop();
+    ws.onclose = (e) => { if (!e.wasClean) cinemaStop(); };
+  }
+
+  const label = cinemaActive
+    ? `${cinemaCount}/${cinemaTotal || "…"}`
+    : "Play scan";
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={
+        "flex items-center gap-1 rounded border px-2 py-0.5 font-mono text-[10px] " +
+        (cinemaActive
+          ? "border-threat-amber/60 text-threat-amber"
+          : "border-panel-border text-panel-text hover:bg-panel-border/40")
+      }
+      title="DEMO — replay the standing-scan AoI surface"
+    >
+      <Play size={11} />
+      <span>{label}</span>
+    </button>
   );
 }

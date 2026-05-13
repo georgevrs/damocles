@@ -12,7 +12,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from backend.api import aoi, audit, briefs, external, graph, map as map_api, preview, standing, store as store_api, watches, ws
+from backend.api import aoi, audit, briefs, external, graph, map as map_api, preview, standing, store as store_api, system as system_api, watches, ws
 from backend.audit.logger import MerkleAuditLogger
 from backend.config import settings
 from backend.graph.client import graph_client
@@ -127,10 +127,19 @@ app.include_router(map_api.router)
 app.include_router(external.router)
 app.include_router(preview.router)
 app.include_router(ws.router)
+app.include_router(system_api.router)
 
 # Read-only static mount serving cached evidence files (SAR PNG previews,
 # etc.). Only ``settings.cache_dir`` is exposed; nothing outside it is reachable.
 app.mount("/static", StaticFiles(directory=settings.cache_dir), name="static")
+
+# Marketing / landing page. Served from /landing/ so the topbar's "← landing"
+# link works without a second Vite dev server on :5174. The landing/ dir
+# contains a self-contained static HTML+JSX bundle (CDN-loaded React, no
+# build step) — html=True so /landing/ serves index.html.
+_landing_dir = settings.project_root / "landing"
+if _landing_dir.is_dir():
+    app.mount("/landing", StaticFiles(directory=_landing_dir, html=True), name="landing")
 
 
 @app.get("/health")

@@ -8,7 +8,7 @@
 //     the right progress + audit slice).
 
 import { create } from "zustand";
-import type { AoIFeature, VesselFeature } from "../api";
+import type { AoIFeature, FlightFeature, VesselFeature } from "../api";
 import type { Brief, CitationChain, ProgressEvent, SourceNode, Watch } from "../types";
 
 // Phase 2 layer toggles. Each entry: visible + opacity (0..1).
@@ -31,10 +31,10 @@ export const DEFAULT_LAYERS: Record<MapLayerKey, MapLayerState> = {
   composites:     { visible: true,  opacity: 0.85 },
   aoi_ai:         { visible: true,  opacity: 0.5 },
   aoi_user:       { visible: true,  opacity: 0.55 },
-  trajectories:   { visible: false, opacity: 0.7 },
+  trajectories:   { visible: true,  opacity: 0.7 },
   news_heatmap:   { visible: false, opacity: 0.6 },
   sar:            { visible: true,  opacity: 0.9 },
-  flight:         { visible: false, opacity: 0.85 },
+  flight:         { visible: true,  opacity: 0.85 },
   earthquakes:    { visible: false, opacity: 0.85 },
   disasters:      { visible: false, opacity: 0.9 },
   eonet:          { visible: false, opacity: 0.85 },
@@ -65,9 +65,20 @@ interface DamoclesState {
   // and a per-vessel trajectory polyline overlay.
   activeVessel: VesselFeature | null;
 
+  // Phase 2: flight clicked on the map — drives BriefPanel flight card
+  // (mirrors VesselDetail). Cleared by Esc or by clicking empty map.
+  activeFlight: FlightFeature | null;
+
   // Phase 2: map layer visibility + draw mode
   mapLayers:     Record<MapLayerKey, MapLayerState>;
   drawingMode:   boolean;
+
+  // W3-T4 scan cinema. When ``cinemaActive`` is true the MapPanel
+  // renders ``cinemaFeatures`` instead of the cached aoi query data,
+  // so polygons pop in one-by-one as WS frames arrive.
+  cinemaActive:   boolean;
+  cinemaFeatures: AoIFeature[];
+  cinemaTotal:    number;
 
   // ─── Actions ───────────────────────────────────────────────────────────
   setActiveWatch:    (w: Watch | null) => void;
@@ -83,6 +94,10 @@ interface DamoclesState {
   setDrawingMode:    (on: boolean) => void;
   setActiveAoI:      (a: AoIFeature | null) => void;
   setActiveVessel:   (v: VesselFeature | null) => void;
+  setActiveFlight:   (f: FlightFeature | null) => void;
+  cinemaStart:       (total: number) => void;
+  cinemaAddFeature:  (f: AoIFeature) => void;
+  cinemaStop:        () => void;
 }
 
 export const useDamocles = create<DamoclesState>((set) => ({
@@ -95,8 +110,12 @@ export const useDamocles = create<DamoclesState>((set) => ({
   activeEvidence:  null,
   activeAoI:       null,
   activeVessel:    null,
+  activeFlight:    null,
   mapLayers:       { ...DEFAULT_LAYERS },
   drawingMode:     false,
+  cinemaActive:    false,
+  cinemaFeatures:  [],
+  cinemaTotal:     0,
 
   setActiveWatch:    (w) => set({ activeWatch: w }),
   setActiveBrief:    (b) => set({ activeBrief: b }),
@@ -113,4 +132,10 @@ export const useDamocles = create<DamoclesState>((set) => ({
   setDrawingMode:    (on) => set({ drawingMode: on }),
   setActiveAoI:      (a) => set({ activeAoI: a }),
   setActiveVessel:   (v) => set({ activeVessel: v }),
+  setActiveFlight:   (f) => set({ activeFlight: f }),
+  cinemaStart:       (total) => set({
+    cinemaActive: true, cinemaFeatures: [], cinemaTotal: total,
+  }),
+  cinemaAddFeature:  (f) => set((s) => ({ cinemaFeatures: [...s.cinemaFeatures, f] })),
+  cinemaStop:        () => set({ cinemaActive: false, cinemaFeatures: [], cinemaTotal: 0 }),
 }));

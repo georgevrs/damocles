@@ -61,12 +61,40 @@ const DIM_NODE           = "#1c2433";
 const DIM_EDGE           = "#0f172a";
 
 function nodeLabel(n: GraphNode): string {
+  // Differentiating labels — the E2E audit (§12.10) found nodes labelled
+  // "Vessel · Vessel · Vessel" which gave the analyst no way to tell them
+  // apart. Use the data: MMSI tail for vessels, headline first words for
+  // news, channel for social, etc.
+  const props = (n as GraphNode & { props?: Record<string, unknown> }).props ?? {};
   switch (n.type) {
     case "Watch":          return "Watch";
-    case "CompositeEvent": return n.label?.slice(0, 14) ?? "ce";
+    case "CompositeEvent": return (n.label || "composite").slice(0, 14);
     case "Brief":          return "Brief";
-    case "BriefSection":   return n.label?.slice(0, 10) ?? "bs";
-    default:               return n.label?.slice(0, 14) ?? n.type;
+    case "BriefSection":   return (n.label || "section").slice(0, 10);
+    case "AreaOfInterest": return (n.label || "AoI").slice(0, 16);
+    case "Vessel": {
+      const mmsi = (props.mmsi as string | undefined) ?? "";
+      const name = (props.vessel_name as string | undefined) ?? "";
+      const ais  = (props.ais_status as string | undefined) ?? "";
+      const len  = props.length_m as number | undefined;
+      if (name)        return name.slice(0, 14);
+      if (mmsi)        return "V " + mmsi.slice(-4);
+      // SAR-only detection — no AIS broadcast → no name, no MMSI. Use
+      // status + length so each node says something the analyst can read.
+      if (ais && ais !== "unknown" && len) return `${ais} ${Math.round(len)}m`;
+      if (ais && ais !== "unknown")        return ais;
+      if (len)                              return `${Math.round(len)}m SAR`;
+      return "SAR · ?";
+    }
+    case "NewsEvent": {
+      const head = (props.headline as string | undefined) ?? n.label ?? "news";
+      return head.split(/\s+/).slice(0, 3).join(" ").slice(0, 18);
+    }
+    case "SocialSignal": {
+      const ch = (props.channel as string | undefined) ?? "";
+      return ch ? "@" + ch.slice(0, 12) : (n.label || "social").slice(0, 12);
+    }
+    default:               return (n.label || n.type).slice(0, 14);
   }
 }
 

@@ -38,6 +38,25 @@ log = logging.getLogger(__name__)
 BBox = tuple[float, float, float, float]
 
 
+# Runtime ALTERs for fact stores that pre-date a schema change. CREATE
+# TABLE IF NOT EXISTS doesn't touch existing tables; ADD COLUMN IF NOT
+# EXISTS does. Each migration is independently idempotent.
+_RUNTIME_MIGRATIONS: tuple[str, ...] = (
+    "ALTER TABLE raw_ais ADD COLUMN IF NOT EXISTS is_water BOOLEAN",
+    "ALTER TABLE raw_sar ADD COLUMN IF NOT EXISTS is_water BOOLEAN",
+    # aoi_canonical_brief: created via CREATE TABLE IF NOT EXISTS in schema.sql,
+    # but older fact stores predate it; this migration is a belt-and-braces
+    # check that doesn't error on a fresh install (CREATE TABLE IF NOT EXISTS
+    # is idempotent).
+    """CREATE TABLE IF NOT EXISTS aoi_canonical_brief (
+        aoi_id        VARCHAR PRIMARY KEY,
+        brief_json    VARCHAR NOT NULL,
+        generated_at  TIMESTAMP NOT NULL,
+        notes         VARCHAR
+    )""",
+)
+
+
 class DuckDBStore:
     """Singleton-ish wrapper around a DuckDB file. ``get_store()`` is the entry
     point — direct construction is for tests with custom paths.
@@ -86,6 +105,14 @@ class DuckDBStore:
                     conn.execute(sql_no_spatial)
                 else:
                     raise
+            # Runtime migrations — CREATE TABLE IF NOT EXISTS won't add columns
+            # to a pre-existing table, so backfill any new columns explicitly.
+            # Idempotent: ADD COLUMN IF NOT EXISTS skips already-present cols.
+            for migration in _RUNTIME_MIGRATIONS:
+                try:
+                    conn.execute(migration)
+                except duckdb.Error as exc:
+                    log.warning("migration skipped (%s): %s", exc, migration[:80])
             self._conn = conn
             return conn
 
@@ -192,12 +219,18 @@ class DuckDBStore:
     # ─────────────────────────── raw upserts ──────────────────────────
 
     def upsert_vessels(self, cache_key: str, vessels: Iterable[Vessel]) -> int:
+        from backend.sensors._water_mask import is_over_water
         rows = [
             (
                 cache_key, v.id, v.mmsi, v.timestamp, v.lat, v.lon,
                 None, None, None,    # speed/course/heading not yet on Vessel
                 v.vessel_name, v.flag, v.length_m,
                 v.ais_status.value if v.ais_status else None,
+                # is_water — SAR detections often fire on land features (buildings,
+                # vehicles, terrain); AIS broadcasts come from real vessels but can
+                # still drift inland on GPS noise. Tag at write-time so downstream
+                # consumers can filter without re-running the mask.
+                is_over_water(v.lat, v.lon, coastal_buffer_deg=0.01),
                 v.model_dump_json(),
             )
             for v in vessels
@@ -205,7 +238,7 @@ class DuckDBStore:
         return self._bulk_upsert(
             "raw_ais",
             ["cache_key","event_id","mmsi","ts","lat","lon","speed_kn","course_deg","heading_deg",
-             "vessel_name","flag","length_m","ais_status","payload_json"],
+             "vessel_name","flag","length_m","ais_status","is_water","payload_json"],
             rows,
             pk_cols=("cache_key", "event_id"),
         )
@@ -248,12 +281,16 @@ class DuckDBStore:
     def upsert_sar(self, cache_key: str, vessels: Iterable[Vessel]) -> int:
         """SAR-flavoured Vessel rows go to raw_sar (parallel index for the
         SAR detection map layer). A vessel with detection_source='SAR' or
-        'both' lands here in addition to raw_ais."""
+        'both' lands here in addition to raw_ais. ``is_water`` is computed
+        at write time and used downstream by the AoI agent to skip land
+        false-positives."""
+        from backend.sensors._water_mask import is_over_water
         rows = [
             (
                 cache_key, v.id, v.timestamp, v.lat, v.lon,
                 v.sar_tile_id, v.length_m, v.confidence, v.dark_vessel_score,
                 None,  # bbox_geojson — populated when CFAR returns a polygon
+                is_over_water(v.lat, v.lon, coastal_buffer_deg=0.005),
                 v.model_dump_json(),
             )
             for v in vessels
@@ -262,7 +299,7 @@ class DuckDBStore:
         return self._bulk_upsert(
             "raw_sar",
             ["cache_key","event_id","ts","lat","lon","sar_tile_id","length_m",
-             "confidence","dark_score","bbox_geojson","payload_json"],
+             "confidence","dark_score","bbox_geojson","is_water","payload_json"],
             rows,
             pk_cols=("cache_key", "event_id"),
         )
@@ -400,6 +437,59 @@ class DuckDBStore:
             else:
                 cur = conn.execute("DELETE FROM aoi WHERE id = ?", [aoi_id])
             return (cur.fetchone() or [0])[0] != 0 or True  # DuckDB returns affected on .execute().rowcount sometimes
+
+    # ─────────────── canonical-brief cache (pitch latency hedge) ───────────
+    # The 4-agent live pipeline takes 12-15s cold. For the demo we pre-bake
+    # one canonical brief per RED AoI at scan-end, persist it here, and serve
+    # it back instantly. Backwards-compatible: the endpoint falls through to
+    # live generation when no cache entry exists.
+
+    def get_canonical_brief(self, aoi_id: str) -> dict[str, Any] | None:
+        """Returns the cached brief dict, or None if not cached."""
+        conn = self.connect()
+        row = conn.execute(
+            "SELECT brief_json FROM aoi_canonical_brief WHERE aoi_id = ?",
+            [aoi_id],
+        ).fetchone()
+        if not row:
+            return None
+        try:
+            return json.loads(row[0])
+        except (TypeError, json.JSONDecodeError):
+            log.warning("canonical brief for %s is malformed JSON; ignoring", aoi_id)
+            return None
+
+    def put_canonical_brief(self, aoi_id: str, brief: dict[str, Any],
+                            notes: str | None = None) -> None:
+        """Upsert a canonical brief. ``brief`` is the response payload (with
+        the flat ``sections`` array) — keep it ready to return as-is."""
+        conn = self.connect()
+        payload = json.dumps(brief, ensure_ascii=False, default=str)
+        with self._lock:
+            conn.execute(
+                """
+                INSERT OR REPLACE INTO aoi_canonical_brief
+                    (aoi_id, brief_json, generated_at, notes)
+                VALUES (?, ?, ?, ?)
+                """,
+                [aoi_id, payload, datetime.now(timezone.utc), notes],
+            )
+
+    def delete_canonical_brief(self, aoi_id: str) -> None:
+        conn = self.connect()
+        with self._lock:
+            conn.execute("DELETE FROM aoi_canonical_brief WHERE aoi_id = ?", [aoi_id])
+
+    def list_canonical_briefs(self) -> list[dict[str, Any]]:
+        """Inventory of cached briefs. Light payload — doesn't return the JSON."""
+        conn = self.connect()
+        rows = conn.execute(
+            "SELECT aoi_id, generated_at, notes FROM aoi_canonical_brief ORDER BY generated_at DESC"
+        ).fetchall()
+        return [
+            {"aoi_id": r[0], "generated_at": r[1].isoformat() if r[1] else None, "notes": r[2]}
+            for r in rows
+        ]
 
     # ───────────────────────── trajectories ───────────────────────────
 

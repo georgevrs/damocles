@@ -64,6 +64,46 @@ export async function verifyAuditChain(): Promise<VerifyVerdict> {
   return (await http.get<VerifyVerdict>("/api/audit/verify")).data;
 }
 
+// W3-T1 demo-only tamper / restore. Backend gates on settings.DEMO_MODE,
+// so hitting these in production deploys returns 404.
+export interface TamperVerdict {
+  tampered:        boolean;
+  tampered_index:  number;
+  entry_id:        string;
+  original_chain:  string;
+  tampered_chain:  string;
+  verified:        boolean;
+  first_bad_index: number | null;
+  chain_total:     number;
+  verdict:         string;
+}
+export async function tamperAuditChain(): Promise<TamperVerdict> {
+  return (await http.post<TamperVerdict>("/api/audit/_tamper")).data;
+}
+
+export interface RestoreVerdict {
+  restored:        boolean;
+  verified:        boolean;
+  first_bad_index: number | null;
+  chain_total:     number;
+  verdict:         string;
+}
+export async function restoreAuditChain(): Promise<RestoreVerdict> {
+  return (await http.post<RestoreVerdict>("/api/audit/_restore")).data;
+}
+
+// ─── System (W3-T2 LLM provider swap) ────────────────────────────────────────
+export interface LlmSwapResult {
+  swapped:  boolean;
+  previous: "gemini" | "ollama";
+  current:  "gemini" | "ollama";
+  model:    string;
+  alive:    boolean;
+}
+export async function switchLlmProvider(provider: "gemini" | "ollama"): Promise<LlmSwapResult> {
+  return (await http.post<LlmSwapResult>("/api/system/llm/switch", { provider })).data;
+}
+
 // ─── Health ──────────────────────────────────────────────────────────────────
 export async function fetchHealth(): Promise<HealthPayload> {
   return (await http.get<HealthPayload>("/health")).data;

@@ -53,7 +53,10 @@ const SATELLITE_STYLE = {
   layers: [
     { id: "satellite-base", type: "raster" as const, source: "satellite-base" },
   ],
-  glyphs: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/glyphs/{fontstack}/{range}.pbf",
+  // W3-T3: glyphs served from the Vite static dir so the demo doesn't need
+  // an outbound connection to render AoI labels. See scripts/vendor_glyphs.py
+  // for the vendoring procedure and which Unicode ranges are included.
+  glyphs: "/maplibre-glyphs/{fontstack}/{range}.pbf",
 };
 
 const AEGEAN_CENTER = { longitude: 25.5, latitude: 37.5 };
@@ -322,12 +325,28 @@ export default function MapPanel({ className }: { className?: string }) {
   const { t } = useT();
   const mapRef = useRef<MapRef | null>(null);
   const [mapReady, setMapReady] = useState(false);
+
+  // Dev/test hook: when the map is ready, pin its MapLibre instance to
+  // window.__damoclesMap so Playwright (and anyone in the console) can
+  // call queryRenderedFeatures / project without going through React
+  // internals. Removed when the component unmounts.
+  useEffect(() => {
+    if (!mapReady) return;
+    const m = mapRef.current?.getMap();
+    if (!m) return;
+    (window as unknown as { __damoclesMap: unknown }).__damoclesMap = m;
+    return () => {
+      const w = window as unknown as { __damoclesMap?: unknown };
+      if (w.__damoclesMap === m) delete w.__damoclesMap;
+    };
+  }, [mapReady]);
   const activeWatch    = useDamocles((s) => s.activeWatch);
   const activeCitation = useDamocles((s) => s.activeCitation);
   const activeAoI      = useDamocles((s) => s.activeAoI);
   const setActiveAoI   = useDamocles((s) => s.setActiveAoI);
   const activeVessel   = useDamocles((s) => s.activeVessel);
   const setActiveVessel = useDamocles((s) => s.setActiveVessel);
+  const setActiveFlight = useDamocles((s) => s.setActiveFlight);
   const layers         = useDamocles((s) => s.mapLayers);
 
   // Per-watch graph (vessels/news/composites markers)
@@ -344,10 +363,17 @@ export default function MapPanel({ className }: { className?: string }) {
     queryFn: () => fetchAoI("all"),
     refetchInterval: 10_000,
   });
+  // W3-T4 scan cinema: when active, the AoI-AI layer renders only the
+  // features the WebSocket has streamed in so far. The query result is
+  // ignored until cinemaStop resets the gate.
+  const cinemaActive   = useDamocles((s) => s.cinemaActive);
+  const cinemaFeatures = useDamocles((s) => s.cinemaFeatures);
   const aoiAi = useMemo<GeoJSON.FeatureCollection>(() => ({
     type: "FeatureCollection",
-    features: (aoiData?.features ?? []).filter((f) => f.properties?.source === "ai"),
-  }), [aoiData]);
+    features: cinemaActive
+      ? (cinemaFeatures as unknown as GeoJSON.Feature[])
+      : (aoiData?.features ?? []).filter((f) => f.properties?.source === "ai"),
+  }), [aoiData, cinemaActive, cinemaFeatures]);
   const aoiUser = useMemo<GeoJSON.FeatureCollection>(() => ({
     type: "FeatureCollection",
     features: (aoiData?.features ?? []).filter((f) => f.properties?.source === "user"),
@@ -486,15 +512,42 @@ export default function MapPanel({ className }: { className?: string }) {
     const map = mapRef.current?.getMap();
     if (!map) return;
     const vesselLayers = ["vessels", "standing-vessels-circle"];
+    const flightLayers = ["flights-circle"];
     const aoiLayers    = ["aoi-ai-fill", "aoi-user-fill"];
-    const allInteractive = [...vesselLayers, ...aoiLayers];
+    const allInteractive = [...flightLayers, ...vesselLayers, ...aoiLayers];
 
     type PointLike = { x: number; y: number };
 
     const onClick = (e: { point: PointLike }) => {
-      // Vessels first
+      // Flights first — they're rendered last so are visually on top.
+      const flightHits = map.queryRenderedFeatures(e.point as never, { layers: flightLayers });
+      if (flightHits.length > 0) {
+        const f = flightHits[0];
+        const props = (f.properties ?? {}) as Record<string, unknown>;
+        setActiveFlight({
+          type: "Feature",
+          id: String(f.id ?? props.icao24 ?? ""),
+          geometry: f.geometry as GeoJSON.Point,
+          properties: {
+            icao24:         String(props.icao24 ?? f.id ?? ""),
+            callsign:       (props.callsign as string | null) ?? null,
+            origin_country: String(props.origin_country ?? ""),
+            altitude_m:     typeof props.altitude_m === "number" ? props.altitude_m : null,
+            on_ground:      Boolean(props.on_ground),
+            velocity_ms:    typeof props.velocity_ms === "number" ? props.velocity_ms : null,
+            heading:        typeof props.heading === "number" ? props.heading : null,
+            vertical_rate:  typeof props.vertical_rate === "number" ? props.vertical_rate : null,
+            ts:             typeof props.ts === "number" ? props.ts : null,
+          },
+        });
+        setActiveVessel(null);
+        return;
+      }
+
+      // Vessels next
       const vesselHits = map.queryRenderedFeatures(e.point as never, { layers: vesselLayers });
       if (vesselHits.length > 0) {
+        setActiveFlight(null);
         const f = vesselHits[0];
         const props = (f.properties ?? {}) as Record<string, unknown>;
         const geom = f.geometry as GeoJSON.Point;
@@ -522,6 +575,7 @@ export default function MapPanel({ className }: { className?: string }) {
       if (aoiHits.length === 0) {
         setActiveAoI(null);
         setActiveVessel(null);
+        setActiveFlight(null);
         return;
       }
       const f = aoiHits[0];
@@ -545,7 +599,7 @@ export default function MapPanel({ className }: { className?: string }) {
       map.off("click", onClick);
       map.off("mousemove", onMove);
     };
-  }, [mapReady, setActiveAoI, setActiveVessel]);
+  }, [mapReady, setActiveAoI, setActiveVessel, setActiveFlight]);
 
   // Fly to the selected vessel's coordinates.
   useEffect(() => {

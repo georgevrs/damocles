@@ -19,6 +19,7 @@ import { generateAoIBrief, type AoIFeature } from "../api";
 import type { Brief, BriefSection } from "../types";
 import { useDamocles } from "../store/damocles";
 import { useT } from "../i18n/useT";
+import { toastError } from "./Toaster";
 
 type Tab = "brief" | "dna" | "detail";
 
@@ -44,18 +45,20 @@ export default function AoITabbed({ aoi }: { aoi: AoIFeature }) {
   const mutation = useMutation({
     mutationFn: () => generateAoIBrief(aoi.id),
     onSuccess: (b: Brief) => setActiveBrief(b),
+    onError: (err: Error) => toastError(
+      "Brief generation failed",
+      err?.message?.slice(0, 200) ?? "Unknown error",
+    ),
   });
 
-  // Clear previous AoI's brief when switching AoIs (avoids stale BLUF flash)
+  // Clear previous AoI's brief when switching AoIs (avoids stale BLUF flash).
+  // Always auto-fire the brief — the demo and the analyst both expect "click
+  // polygon → brief appears" as one motion, not a click-then-CTA two-step.
   useEffect(() => {
     setActiveBrief(null);
     mutation.reset();
     setTab("brief");
-    // Eagerly auto-fire brief generation when the analyst lands on a new
-    // AoI — saves the extra click that the demo script glosses over.
-    if (aoi.properties.threat_grade === "RED" || aoi.properties.threat_grade === "AMBER") {
-      mutation.mutate();
-    }
+    mutation.mutate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [aoi.id]);
 

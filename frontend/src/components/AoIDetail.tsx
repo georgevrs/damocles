@@ -52,7 +52,7 @@ function polygonAreaKm2(geom: AoIFeature["geometry"]): number {
 }
 
 export default function AoIDetail({ aoi }: { aoi: AoIFeature }) {
-  const { t } = useT();
+  const { t, lang } = useT();
   const setActiveAoI = useDamocles((s) => s.setActiveAoI);
   const p = aoi.properties;
   const isUser = p.source === "user";
@@ -60,6 +60,12 @@ export default function AoIDetail({ aoi }: { aoi: AoIFeature }) {
   const gradeCls = GRADE_COLOR[grade] ?? GRADE_COLOR.GREEN;
   const areaKm2 = polygonAreaKm2(aoi.geometry);
   const ts = p.created_at ? new Date(p.created_at) : null;
+
+  // Language-aware name selection — in EN show name_en first; in EL show
+  // name_el first. Always fall back to the other locale's name, then the id.
+  const primaryName = (lang === "en" ? p.name_en || p.name_el : p.name_el || p.name_en)
+    || aoi.id.slice(0, 12);
+  const altName = lang === "en" ? p.name_el : p.name_en;
 
   const { data: explore, isLoading } = useQuery({
     queryKey: ["aoi-explore", aoi.id],
@@ -97,10 +103,10 @@ export default function AoIDetail({ aoi }: { aoi: AoIFeature }) {
       </div>
 
       <div className="font-serif text-lg leading-tight text-panel-text">
-        {p.name_el || p.name_en || aoi.id.slice(0, 12)}
+        {primaryName}
       </div>
-      {p.name_en && p.name_el && p.name_en !== p.name_el && (
-        <div className="mt-0.5 text-xs italic text-panel-muted">{p.name_en}</div>
+      {altName && altName !== primaryName && (
+        <div className="mt-0.5 text-xs italic text-panel-muted">{altName}</div>
       )}
 
       {p.description && (

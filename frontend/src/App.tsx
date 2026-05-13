@@ -19,6 +19,8 @@ import GraphPanel     from "./components/GraphPanel";
 import ProgressStream from "./components/ProgressStream";
 import AuditLog       from "./components/AuditLog";
 import EvidenceModal  from "./components/EvidenceModal";
+import Toaster        from "./components/Toaster";
+import EscToDeselect  from "./components/EscToDeselect";
 
 // Resize handles — thin vertical/horizontal slivers that brighten on
 // hover/active so the affordance is unmistakable without dominating the
@@ -81,6 +83,8 @@ export default function App() {
       </PanelGroup>
 
       <EvidenceModal />
+      <Toaster />
+      <EscToDeselect />
     </div>
   );
 }
