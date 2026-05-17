@@ -296,6 +296,42 @@ export async function fetchVessels(opts: {
   return (await http.get("/api/map/vessels", { params })).data;
 }
 
+export interface VesselTrajectoryPoint {
+  lon:        number;
+  lat:        number;
+  ts:         string;
+  speed_kn:   number | null;
+  course_deg: number | null;
+}
+
+export interface VesselDetailData {
+  event_id:              string;
+  mmsi:                  string | null;
+  ts:                    string | null;
+  lat:                   number;
+  lon:                   number;
+  vessel_name:           string | null;
+  flag:                  string | null;
+  length_m:              number | null;
+  ais_status:            string | null;
+  speed_kn:              number | null;
+  course_deg:            number | null;
+  heading_deg:           number | null;
+  sar_tile_id:           string | null;
+  confidence:            number | null;
+  dark_vessel_score:     number | null;
+  ais_match_distance_km: number | null;
+  trajectory_points:     VesselTrajectoryPoint[];
+  n_trajectory_points:   number;
+}
+
+export async function fetchVesselDetail(eventId: string, trajectoryLimit = 20): Promise<VesselDetailData> {
+  return (await http.get<VesselDetailData>(
+    `/api/map/vessels/${encodeURIComponent(eventId)}`,
+    { params: { trajectory_limit: trajectoryLimit } },
+  )).data;
+}
+
 // ─── OpenSky flights (live, no cache) ────────────────────────────────
 export interface FlightFeature {
   type: "Feature";

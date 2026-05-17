@@ -6,11 +6,12 @@ are cheap and meant to be called per pan/zoom.
 """
 from __future__ import annotations
 
+import json
 import logging
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, HTTPException, Query
 
 from backend.store import get_store
 
@@ -185,6 +186,105 @@ async def vessel_trajectory(
                 "last_ts":  timestamps[-1],
             },
         }],
+    }
+
+
+@router.get("/vessels/{event_id}")
+async def vessel_detail(
+    event_id: str,
+    trajectory_limit: int = Query(20, ge=1, le=100),
+) -> dict[str, Any]:
+    """Rich detail for a single vessel — merges raw_ais + raw_sar, returns
+    the last N trajectory points and provenance fields (dark score, SAR tile,
+    CFAR confidence, AIS match distance)."""
+    conn = get_store().connect()
+
+    row = conn.execute(
+        """
+        SELECT event_id, mmsi, ts, lat, lon,
+               vessel_name, flag, length_m, ais_status,
+               speed_kn, course_deg, heading_deg, payload_json
+          FROM raw_ais WHERE event_id = ?
+        """,
+        [event_id],
+    ).fetchone()
+    if row is None:
+        raise HTTPException(status_code=404, detail="vessel not found")
+
+    (event_id_db, mmsi, ts, lat, lon,
+     vessel_name, flag, length_m, ais_status,
+     speed_kn, course_deg, heading_deg, payload_json_str) = row
+
+    # Pull richer fields out of the stored Vessel JSON blob when available.
+    payload: dict[str, Any] = {}
+    if payload_json_str:
+        try:
+            payload = json.loads(payload_json_str)
+        except Exception:
+            pass
+
+    # SAR row for this exact detection (may not exist for AIS-only vessels).
+    sar_row = conn.execute(
+        "SELECT sar_tile_id, confidence, dark_score FROM raw_sar WHERE event_id = ?",
+        [event_id],
+    ).fetchone()
+
+    sar_tile_id: str | None = None
+    confidence: float | None = None
+    dark_score: float | None = None
+    if sar_row:
+        sar_tile_id, confidence, dark_score = sar_row
+    else:
+        sar_tile_id = payload.get("sar_tile_id")
+        confidence = payload.get("confidence")
+        dark_score = payload.get("dark_vessel_score")
+
+    ais_match_distance_km: float | None = payload.get("ais_match_distance_km")
+
+    # Trajectory — all recorded positions for this MMSI, most-recent first.
+    trajectory_points: list[dict[str, Any]] = []
+    if mmsi:
+        traj_rows = conn.execute(
+            """
+            SELECT lon, lat, ts, speed_kn, course_deg
+              FROM raw_ais
+             WHERE mmsi = ?
+             ORDER BY ts DESC
+             LIMIT ?
+            """,
+            [mmsi, trajectory_limit],
+        ).fetchall()
+        for r in traj_rows:
+            r_ts = r[2]
+            trajectory_points.append({
+                "lon":        r[0],
+                "lat":        r[1],
+                "ts":         r_ts.isoformat() if hasattr(r_ts, "isoformat") else str(r_ts),
+                "speed_kn":   r[3],
+                "course_deg": r[4],
+            })
+
+    ts_iso = ts.isoformat() if hasattr(ts, "isoformat") else (str(ts) if ts else None)
+
+    return {
+        "event_id":              event_id_db,
+        "mmsi":                  mmsi,
+        "ts":                    ts_iso,
+        "lat":                   lat,
+        "lon":                   lon,
+        "vessel_name":           vessel_name,
+        "flag":                  flag,
+        "length_m":              length_m,
+        "ais_status":            ais_status,
+        "speed_kn":              speed_kn,
+        "course_deg":            course_deg,
+        "heading_deg":           heading_deg,
+        "sar_tile_id":           sar_tile_id,
+        "confidence":            confidence,
+        "dark_vessel_score":     dark_score,
+        "ais_match_distance_km": ais_match_distance_km,
+        "trajectory_points":     trajectory_points,
+        "n_trajectory_points":   len(trajectory_points),
     }
 
 
