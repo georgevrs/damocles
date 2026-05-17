@@ -1,9 +1,10 @@
+
+@import "maplibre-gl/dist/maplibre-gl.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* MapLibre base — keep above tailwind so .maplibregl-* defaults apply */
-@import "maplibre-gl/dist/maplibre-gl.css";
 
 html, body, #root {
   height: 100%;
