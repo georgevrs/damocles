@@ -73,44 +73,68 @@ async def vessels(
     bbox: str | None = Query(None, description="min_lon,min_lat,max_lon,max_lat"),
     hours: int = Query(24 * 7, ge=1, le=24 * 30),
     limit: int = Query(2000, ge=1, le=10000),
+    min_confidence: float = Query(
+        0.0, ge=0.0, le=1.0,
+        description="Minimum SAR detection confidence (0–1). "
+                    "AIS-only vessels (no SAR row) are always included.",
+    ),
 ) -> dict[str, Any]:
-    """All vessel detections in the bbox/window. Reads raw_ais (which
-    contains both AISStream broadcasts AND SAR-detected vessels — the
-    SAR ones lack MMSI). Independent of any active watch."""
+    """All vessel detections in the bbox/window.
+
+    SAR detections below ``min_confidence`` are filtered out to remove low-quality
+    CFAR false positives. AIS-only vessels (pure broadcasts, no SAR row) are
+    always included regardless of the threshold.
+    """
     box = _parse_bbox(bbox)
     t_to = datetime.now(timezone.utc)
     t_from = t_to - timedelta(hours=hours)
     conn = get_store().connect()
     rows = conn.execute(
         """
-        SELECT event_id, mmsi, ts, lat, lon, vessel_name,
-               flag, length_m, ais_status
-          FROM raw_ais
-         WHERE ts BETWEEN ? AND ?
-           AND lon BETWEEN ? AND ?
-           AND lat BETWEEN ? AND ?
-         ORDER BY ts DESC
+        SELECT a.event_id, a.mmsi, a.ts, a.lat, a.lon, a.vessel_name,
+               a.flag, a.length_m, a.ais_status, s.confidence, s.dark_score
+          FROM raw_ais a
+          LEFT JOIN raw_sar s ON s.event_id = a.event_id
+         WHERE a.ts BETWEEN ? AND ?
+           AND a.lon BETWEEN ? AND ?
+           AND a.lat BETWEEN ? AND ?
+           AND (s.confidence IS NULL OR s.confidence >= ?)
+         ORDER BY a.ts DESC
          LIMIT ?
         """,
-        [t_from, t_to, box[0], box[2], box[1], box[3], limit],
+        [t_from, t_to, box[0], box[2], box[1], box[3], min_confidence, limit],
     ).fetchall()
 
     features = []
     for r in rows:
+        event_id, mmsi, ts, lat, lon = r[0], r[1], r[2], r[3], r[4]
+        vessel_name, flag, length_m = r[5], r[6], r[7]
+        ais_status, confidence, dark_score = r[8], r[9], r[10]
+        # Label: real name → MMSI → human-readable fallback (never a raw UUID)
+        if vessel_name:
+            label = vessel_name
+        elif mmsi:
+            label = f"MMSI {mmsi}"
+        elif ais_status == "dark":
+            label = "Dark Vessel"
+        else:
+            label = "SAR Detection"
         features.append({
             "type": "Feature",
-            "id":   r[0],
-            "geometry": {"type": "Point", "coordinates": [r[4], r[3]]},
+            "id":   event_id,
+            "geometry": {"type": "Point", "coordinates": [lon, lat]},
             "properties": {
-                "node_id":     r[0],
-                "node_type":   "Vessel",
-                "label":       r[5] or r[1] or r[0][:8],
-                "mmsi":        r[1],
-                "ts":          r[2].isoformat() if r[2] else None,
-                "vessel_name": r[5],
-                "flag":        r[6],
-                "length_m":    r[7],
-                "ais_status":  r[8],
+                "node_id":           event_id,
+                "node_type":         "Vessel",
+                "label":             label,
+                "mmsi":              mmsi,
+                "ts":                ts.isoformat() if ts else None,
+                "vessel_name":       vessel_name,
+                "flag":              flag,
+                "length_m":          length_m,
+                "ais_status":        ais_status,
+                "confidence":        confidence,
+                "dark_vessel_score": dark_score,
             },
         })
     return {"type": "FeatureCollection", "features": features}

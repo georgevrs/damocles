@@ -278,6 +278,8 @@ export interface VesselFeature {
     flag: string | null;
     length_m: number | null;
     ais_status: string | null;
+    confidence: number | null;
+    dark_vessel_score: number | null;
   };
 }
 export async function fetchVesselTrajectory(eventId: string, hours = 24 * 14): Promise<GeoJSON.FeatureCollection> {
@@ -287,12 +289,16 @@ export async function fetchVesselTrajectory(eventId: string, hours = 24 * 14): P
 }
 
 export async function fetchVessels(opts: {
-  bbox?: [number, number, number, number]; hours?: number; limit?: number;
+  bbox?: [number, number, number, number];
+  hours?: number;
+  limit?: number;
+  minConfidence?: number;
 } = {}): Promise<{ type: "FeatureCollection"; features: VesselFeature[] }> {
   const params: Record<string, string | number> = {};
-  if (opts.bbox)  params.bbox = opts.bbox.join(",");
-  if (opts.hours) params.hours = opts.hours;
-  if (opts.limit) params.limit = opts.limit;
+  if (opts.bbox)                        params.bbox = opts.bbox.join(",");
+  if (opts.hours)                       params.hours = opts.hours;
+  if (opts.limit)                       params.limit = opts.limit;
+  if (opts.minConfidence !== undefined) params.min_confidence = opts.minConfidence;
   return (await http.get("/api/map/vessels", { params })).data;
 }
 

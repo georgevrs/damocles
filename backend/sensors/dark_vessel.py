@@ -71,6 +71,11 @@ class DarkVesselConfig:
     nighttime_hours_utc: tuple[int, int] = (0, 6)   # half-open: hour ∈ [start, end)
     base_dark_score: float = 0.7
     risk_increment: float = 0.1
+    # When the median SAR-to-AIS time gap exceeds this threshold (hours), the
+    # time filter is dropped and only spatial proximity is used for matching.
+    # This handles the live-AIS-vs-historical-SAR mismatch: AISStream gives
+    # current positions; Sentinel-1 has a 6-day revisit cycle.
+    live_fallback_threshold_h: float = 4.0
 
 
 def _is_in_any_zone(lat: float, lon: float, zones: Iterable[ContestedZone]) -> bool:
@@ -92,6 +97,35 @@ def _compute_dark_score(v: Vessel, cfg: DarkVesselConfig) -> float:
     return min(1.0, round(score, 3))
 
 
+def _use_spatial_only(
+    sar_vessels: list[Vessel],
+    ais_records: list[AISRecord],
+    threshold_h: float,
+) -> bool:
+    """Return True when every AIS record is too far in time from every SAR vessel.
+
+    This happens when live AIS (timestamp ≈ now) is matched against historical
+    SAR detections (timestamp = midpoint of the watch window, possibly days old).
+    In that case we drop the time filter and match on spatial proximity only,
+    treating the most recent AIS position as a proxy for the vessel's location.
+    """
+    if not ais_records or not sar_vessels:
+        return False
+    threshold_s = threshold_h * 3600.0
+    # Check median SAR vessel timestamp against the newest AIS record.
+    sar_times = sorted(v.timestamp for v in sar_vessels)
+    sar_median = sar_times[len(sar_times) // 2]
+    newest_ais = max(a.timestamp for a in ais_records)
+    gap_s = abs((newest_ais - sar_median).total_seconds())
+    if gap_s > threshold_s:
+        log.info(
+            "AIS/SAR time gap %.1f h > %.1f h threshold — using spatial-only matching",
+            gap_s / 3600.0, threshold_h,
+        )
+        return True
+    return False
+
+
 def cross_reference(
     sar_vessels: list[Vessel],
     ais_records: list[AISRecord],
@@ -102,22 +136,30 @@ def cross_reference(
     Pure function — does not mutate input lists. Returns new Vessel objects
     with updated ``ais_status``, ``mmsi``, ``vessel_name``, ``flag``,
     ``ais_match_distance_km``, and ``dark_vessel_score`` fields.
+
+    When live AIS records are too far in time from the SAR acquisition window
+    (gap > ``config.live_fallback_threshold_h``), the time filter is dropped
+    and only spatial proximity is used — the most recent AIS fix is treated
+    as the vessel's best-known position.
     """
     cfg = config or DarkVesselConfig()
     tolerance_seconds = cfg.time_tolerance_min * 60.0
+    spatial_only = _use_spatial_only(sar_vessels, ais_records, cfg.live_fallback_threshold_h)
 
     enriched: list[Vessel] = []
     matched_ais_ids: set[str] = set()
 
     for v in sar_vessels:
-        # Candidate AIS broadcasts within time tolerance
-        in_time_window = [
-            a for a in ais_records
-            if abs((a.timestamp - v.timestamp).total_seconds()) <= tolerance_seconds
-        ]
-        # ...further filtered by spatial tolerance
+        if spatial_only:
+            pool = ais_records
+        else:
+            pool = [
+                a for a in ais_records
+                if abs((a.timestamp - v.timestamp).total_seconds()) <= tolerance_seconds
+            ]
+
         candidates = [
-            (a, haversine_km(v.lat, v.lon, a.lat, a.lon)) for a in in_time_window
+            (a, haversine_km(v.lat, v.lon, a.lat, a.lon)) for a in pool
         ]
         candidates = [(a, d) for (a, d) in candidates if d <= cfg.spatial_tolerance_km]
 
@@ -140,9 +182,9 @@ def cross_reference(
         enriched.append(copy)
 
     log.info(
-        "Dark-vessel cross-reference: %d SAR vessels, %d AIS records → "
-        "%d broadcasting / %d dark",
-        len(sar_vessels), len(ais_records),
+        "Dark-vessel cross-reference: %d SAR vessels, %d AIS records "
+        "(spatial_only=%s) → %d broadcasting / %d dark",
+        len(sar_vessels), len(ais_records), spatial_only,
         sum(1 for v in enriched if v.ais_status == AISStatus.BROADCASTING),
         sum(1 for v in enriched if v.ais_status == AISStatus.DARK),
     )

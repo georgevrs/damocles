@@ -74,8 +74,9 @@ export const STRINGS: Record<Lang, Record<string, string>> = {
     "draw.btn.saving":       "Saving…",
     "draw.btn.cancel":       "Cancel",
 
-    "legend.vessel.broadcasting": "Vessel (broadcasting)",
-    "legend.vessel.dark":    "Vessel (AIS-dark)",
+    "legend.vessel.identified":  "Vessel (identified)",
+    "legend.vessel.broadcasting": "Vessel (AIS only)",
+    "legend.vessel.dark":    "Vessel (SAR only)",
     "legend.news":           "News event",
     "legend.composite":      "Composite (GREEN)",
     "legend.aoi.ai":         "AoI (AI)",
@@ -278,8 +279,9 @@ export const STRINGS: Record<Lang, Record<string, string>> = {
     "draw.btn.saving":       "Αποθήκευση…",
     "draw.btn.cancel":       "Ακύρωση",
 
-    "legend.vessel.broadcasting": "Σκάφος (εκπομπή)",
-    "legend.vessel.dark":    "Σκάφος (AIS-σκοτεινό)",
+    "legend.vessel.identified":  "Σκάφος (ταυτοποιημένο)",
+    "legend.vessel.broadcasting": "Σκάφος (μόνο AIS)",
+    "legend.vessel.dark":    "Σκάφος (μόνο SAR)",
     "legend.news":           "Συμβάν ειδήσεων",
     "legend.composite":      "Σύνθετο (ΠΡΑΣΙΝΟ)",
     "legend.aoi.ai":         "ΠΕ (AI)",

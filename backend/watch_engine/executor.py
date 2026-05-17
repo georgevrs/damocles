@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import uuid
 from datetime import datetime, timedelta, timezone
 from typing import AsyncIterator, Iterable
 
@@ -42,6 +43,7 @@ from backend.llm.base import LLMProvider
 from backend.llm.factory import get_devil_provider
 from backend.models.brief import Brief
 from backend.models.event import (
+    AISStatus,
     AirspaceEvent,
     CompositeEvent,
     NewsEvent,
@@ -164,15 +166,80 @@ class WatchExecutor:
                                 f"{name}: {type(exc).__name__}: {exc}", min(pct, 70))
 
         # ─── AIS cross-reference ─────────────────────────────────────────────
+        # Always run — even with zero AIS records, so SAR detections get tagged
+        # DARK (not left as UNKNOWN). cross_reference() with an empty ais_records
+        # list correctly marks every vessel DARK and computes dark_vessel_score.
         vessels: list[Vessel] = list(getattr(results.get("geospatial"), "events", []) or [])
         ais_records = results.get("ais") or []
-        if ais_records and vessels:
+        if vessels:
             yield self._evt("ais_cross_ref", "started",
                             f"matching {len(vessels)} SAR detections vs {len(ais_records)} AIS records", 72)
             vessels = cross_reference(vessels, ais_records)
             n_dark = sum(1 for v in vessels if v.ais_status.value == "dark")
+            n_bcast = sum(1 for v in vessels if v.ais_status.value == "broadcasting")
+
+            from backend.store import get_store
+            _store = get_store()
+
+            # Write enriched vessels back to DuckDB — the initial cache write
+            # happened before cross_reference(), so the map layer was reading
+            # UNKNOWN rows with no name/MMSI. This upsert overwrites those rows
+            # with the post-correlation AIS status, vessel_name, dark_score, etc.
+            geo_result = results.get("geospatial")
+            geo_cache_key = (getattr(geo_result, "metadata", None) or {}).get("cache_key")
+            if geo_cache_key:
+                try:
+                    await asyncio.to_thread(_store.upsert_vessels, geo_cache_key, vessels)
+                    await asyncio.to_thread(_store.upsert_sar, geo_cache_key, vessels)
+                except Exception:
+                    log.exception("post-cross-reference DuckDB update failed (continuing)")
+
+            # Persist unmatched AIS records as pure-AIS broadcasting vessels.
+            # Without this step AIS broadcasts that weren't spatially matched to a
+            # SAR detection are discarded, so cyan/red dots never appear on the map.
+            n_ais_only = 0
+            if ais_records:
+                matched_mmsis = {
+                    v.mmsi for v in vessels
+                    if v.mmsi and v.ais_status == AISStatus.BROADCASTING
+                }
+                # Deduplicate by MMSI — keep the most-recent position per vessel.
+                # AISStream may send multiple position reports in the capture window.
+                dedup: dict[str, object] = {}
+                for r in ais_records:
+                    if r.mmsi not in matched_mmsis:
+                        prev = dedup.get(r.mmsi)
+                        if prev is None or r.timestamp > prev.timestamp:  # type: ignore[union-attr]
+                            dedup[r.mmsi] = r
+                ais_only_vessels: list[Vessel] = [
+                    Vessel(
+                        # Deterministic UUID per MMSI so consecutive scans overwrite
+                        # the same row rather than accumulating stale positions.
+                        id=str(uuid.uuid5(uuid.NAMESPACE_DNS, f"ais:{r.mmsi}")),
+                        lat=r.lat,
+                        lon=r.lon,
+                        timestamp=r.timestamp,
+                        detection_source="AIS",
+                        ais_status=AISStatus.BROADCASTING,
+                        confidence=1.0,
+                        mmsi=r.mmsi,
+                        vessel_name=r.name,
+                        flag=r.flag,
+                    )
+                    for r in dedup.values()  # type: ignore[union-attr]
+                ]
+                n_ais_only = len(ais_only_vessels)
+                if ais_only_vessels:
+                    try:
+                        # Stable cache key: all AIS-live vessels share one bucket
+                        # so the deterministic UUIDs actually overwrite on each run.
+                        ais_ck = _store.cache_key("ais_live", bbox, time_to, time_to)
+                        await asyncio.to_thread(_store.upsert_vessels, ais_ck, ais_only_vessels)
+                    except Exception:
+                        log.exception("AIS-only vessel upsert failed (continuing)")
+
             yield self._evt("ais_cross_ref", "complete",
-                            f"{n_dark} dark vessels", 75)
+                            f"{n_bcast} SAR+AIS / {n_dark} dark / {n_ais_only} AIS-only", 75)
 
         news: list[NewsEvent] = list(getattr(results.get("gdelt"), "events", []) or [])
         social: list[SocialSignal] = list(getattr(results.get("telegram"), "events", []) or [])

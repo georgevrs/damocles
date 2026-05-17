@@ -79,6 +79,20 @@ const GREECE_FC: FeatureCollection<Polygon> = {
 
 // ─── Source-point layers (kept from v1, with opacity now driven by store) ───
 
+// Named check: vessel_name is a non-empty string
+const NAMED_EXPR = ["!=", ["coalesce", ["get", "vessel_name"], ""], ""] as const;
+
+// 3-state vessel colour:
+//   light-green → AIS broadcasting AND has a known name (identified)
+//   cyan        → AIS broadcasting, name unknown (not shown in legend but still renderable)
+//   slate       → SAR-detected, no matching AIS signal (dark / unconfirmed)
+const VESSEL_COLOR_EXPR = [
+  "case",
+  ["all", ["==", ["get", "ais_status"], "broadcasting"], NAMED_EXPR], "#4ade80",
+  ["==", ["get", "ais_status"], "broadcasting"],                       "#22d3ee",
+  "#94a3b8",
+] as const;
+
 function vesselLayer(opacity: number): CircleLayer {
   return {
     id: "vessels", type: "circle", source: "vessels",
@@ -87,12 +101,7 @@ function vesselLayer(opacity: number): CircleLayer {
         "interpolate", ["linear"], ["coalesce", ["get", "length_m"], 0],
         0, 3, 50, 4, 150, 5.5, 300, 7,
       ],
-      "circle-color": [
-        "match", ["get", "ais_status"],
-        "dark", "#ef4444",
-        "broadcasting", "#22d3ee",
-        "#94a3b8",
-      ],
+      "circle-color": VESSEL_COLOR_EXPR as unknown as string,
       "circle-stroke-color": "#0b0f17",
       "circle-stroke-width": 1,
       "circle-opacity": [
@@ -556,15 +565,17 @@ export default function MapPanel({ className }: { className?: string }) {
           id: String(f.id ?? props.node_id ?? ""),
           geometry: geom,
           properties: {
-            node_id:     String(props.node_id ?? f.id ?? ""),
-            node_type:   "Vessel",
-            label:       String(props.label ?? props.node_id ?? ""),
-            mmsi:        (props.mmsi as string | null) ?? null,
-            ts:          (props.ts as string | null) ?? null,
-            vessel_name: (props.vessel_name as string | null) ?? null,
-            flag:        (props.flag as string | null) ?? null,
-            length_m:    typeof props.length_m === "number" ? props.length_m : null,
-            ais_status:  (props.ais_status as string | null) ?? null,
+            node_id:           String(props.node_id ?? f.id ?? ""),
+            node_type:         "Vessel",
+            label:             String(props.label ?? props.node_id ?? ""),
+            mmsi:              (props.mmsi as string | null) ?? null,
+            ts:                (props.ts as string | null) ?? null,
+            vessel_name:       (props.vessel_name as string | null) ?? null,
+            flag:              (props.flag as string | null) ?? null,
+            length_m:          typeof props.length_m === "number" ? props.length_m : null,
+            ais_status:        (props.ais_status as string | null) ?? null,
+            confidence:        typeof props.confidence === "number" ? props.confidence : null,
+            dark_vessel_score: typeof props.dark_vessel_score === "number" ? props.dark_vessel_score : null,
           },
         });
         return;
@@ -821,15 +832,33 @@ export default function MapPanel({ className }: { className?: string }) {
                   "interpolate", ["linear"], ["coalesce", ["get", "length_m"], 0],
                   0, 2.5, 50, 3.5, 150, 5, 300, 6.5,
                 ],
-                "circle-color": [
-                  "match", ["get", "ais_status"],
-                  "dark",         "#ef4444",
-                  "broadcasting", "#22d3ee",
-                  "#94a3b8",
-                ],
+                "circle-color": VESSEL_COLOR_EXPR as unknown as string,
                 "circle-stroke-color": "#0b0f17",
                 "circle-stroke-width": 0.8,
                 "circle-opacity": layers.vessels.opacity * 0.8,
+              }}
+            />
+            {/* Vessel name labels — only shown for red (identified) vessels at zoom ≥ 8 */}
+            <Layer
+              id="standing-vessels-label" type="symbol" source="standing-vessels"
+              minzoom={8}
+              filter={["all",
+                ["==", ["get", "ais_status"], "broadcasting"],
+                ["!=", ["coalesce", ["get", "vessel_name"], ""], ""],
+              ]}
+              layout={{
+                "text-field":          ["get", "vessel_name"],
+                "text-size":           10,
+                "text-anchor":         "top",
+                "text-offset":         [0, 0.9],
+                "text-allow-overlap":  false,
+                "text-font":           ["Open Sans Regular", "Arial Unicode MS Regular"],
+              }}
+              paint={{
+                "text-color":      "#4ade80",
+                "text-halo-color": "#0b0f17",
+                "text-halo-width": 1.5,
+                "text-opacity":    layers.vessels.opacity,
               }}
             />
           </Source>
@@ -948,8 +977,8 @@ export default function MapPanel({ className }: { className?: string }) {
 
       {/* Legend */}
       <div className="pointer-events-none absolute right-2 bottom-8 z-20 space-y-0.5 rounded-md bg-panel-bg/85 px-2 py-1 text-[10px] backdrop-blur-sm">
-        <Legend dot="#22d3ee" label={t("legend.vessel.broadcasting")} />
-        <Legend dot="#ef4444" label={t("legend.vessel.dark")} />
+        <Legend dot="#4ade80" label={t("legend.vessel.identified")} />
+        <Legend dot="#94a3b8" label={t("legend.vessel.dark")} />
         <Legend dot="#f59e0b" label={t("legend.news")} />
         <Legend dot="#10b981" label={t("legend.composite")} diamond />
         <Legend dot="#f59e0b" label={t("legend.aoi.ai")} outline />
