@@ -1,0 +1,59 @@
+{
+  "total_downloaded": 6,
+  "scenes": [
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260512T043225_20260512T043250_064479_081EF3_rtc",
+      "date": "2026-05-12",
+      "orbit": "descending",
+      "type": "RTC",
+      "files": {
+        "sar_preview_png": "data/satellite_intel/02_sentinel1_sar/images/S1A_IW_GRDH_1SDV_20260512T043225_20260512T043250_064479_081EF3_rtc_RTC_preview.png"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260512T043200_20260512T043225_064479_081EF3_rtc",
+      "date": "2026-05-12",
+      "orbit": "descending",
+      "type": "RTC",
+      "files": {
+        "sar_preview_png": "data/satellite_intel/02_sentinel1_sar/images/S1A_IW_GRDH_1SDV_20260512T043200_20260512T043225_064479_081EF3_rtc_RTC_preview.png"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260512T043135_20260512T043200_064479_081EF3_rtc",
+      "date": "2026-05-12",
+      "orbit": "descending",
+      "type": "RTC",
+      "files": {
+        "sar_preview_png": "data/satellite_intel/02_sentinel1_sar/images/S1A_IW_GRDH_1SDV_20260512T043135_20260512T043200_064479_081EF3_rtc_RTC_preview.png"
+      }
+    },
+    {
+      "id": "S1C_IW_GRDH_1SDV_20260512T162329_20260512T162354_007623_00F7C1",
+      "date": "2026-05-12",
+      "orbit": "ascending",
+      "type": "GRD",
+      "files": {
+        "sar_preview_png": "data/satellite_intel/02_sentinel1_sar/images/S1C_IW_GRDH_1SDV_20260512T162329_20260512T162354_007623_00F7C1_GRD_preview.png"
+      }
+    },
+    {
+      "id": "S1C_IW_GRDH_1SDV_20260512T162304_20260512T162329_007623_00F7C1",
+      "date": "2026-05-12",
+      "orbit": "ascending",
+      "type": "GRD",
+      "files": {
+        "sar_preview_png": "data/satellite_intel/02_sentinel1_sar/images/S1C_IW_GRDH_1SDV_20260512T162304_20260512T162329_007623_00F7C1_GRD_preview.png"
+      }
+    },
+    {
+      "id": "S1C_IW_GRDH_1SDV_20260512T162239_20260512T162304_007623_00F7C1",
+      "date": "2026-05-12",
+      "orbit": "ascending",
+      "type": "GRD",
+      "files": {
+        "sar_preview_png": "data/satellite_intel/02_sentinel1_sar/images/S1C_IW_GRDH_1SDV_20260512T162239_20260512T162304_007623_00F7C1_GRD_preview.png"
+      }
+    }
+  ]
+}

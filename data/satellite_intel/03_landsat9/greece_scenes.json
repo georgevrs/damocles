@@ -1,0 +1,1187 @@
+{
+  "source": "USGS LandsatLook STAC",
+  "collection": "landsat-c2l2-sr",
+  "bbox": [
+    17.0,
+    34.5,
+    30.0,
+    42.5
+  ],
+  "date_range": "2026-04-01T00:00:00Z / 2026-05-12T23:59:59Z",
+  "fetched_at": "2026-05-12T21:09:41.134937+00:00",
+  "what_it_gives": [
+    "30m multispectral (visible, NIR, SWIR) + 100m Thermal IR (TIRS)",
+    "Thermal anomaly detection: fires, industrial heat, military movement",
+    "NDVI for vegetation monitoring (Evros deforestation/clearance)",
+    "16-day revisit \u2014 slower than Sentinel but adds thermal band",
+    "Free, open, no API key \u2014 direct download via href URLs"
+  ],
+  "damocles_use_cases": [
+    "Thermal signatures at military installations near borders",
+    "Forest fire detection correlated with GDACS alerts",
+    "Long-term land use change (30-year Landsat archive)",
+    "Agricultural patterns near border crossings (Evros)"
+  ],
+  "items": [
+    {
+      "id": "LC09_L2SP_185036_20260510_20260511_02_T2_SR",
+      "datetime": "2026-05-10T09:17:49.955947Z",
+      "platform": "LANDSAT_9",
+      "instruments": [
+        "OLI",
+        "TIRS"
+      ],
+      "cloud_cover_%": 60.82,
+      "wrs_path": "185",
+      "wrs_row": "036",
+      "processing_level": null,
+      "scene_id": "LC91850362026130LGN00",
+      "bbox": [
+        17.93694443137105,
+        33.551720179968754,
+        20.40619085874728,
+        35.65417905813412
+      ],
+      "available_bands": [
+        "thumbnail",
+        "reduced_resolution_browse",
+        "index",
+        "MTL.json",
+        "coastal",
+        "blue",
+        "green",
+        "red",
+        "nir08",
+        "swir16",
+        "swir22",
+        "qa_aerosol",
+        "qa_pixel",
+        "qa_radsat",
+        "ANG.txt",
+        "MTL.txt",
+        "MTL.xml"
+      ],
+      "thumbnail_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/036/LC09_L2SP_185036_20260510_20260511_02_T2/LC09_L2SP_185036_20260510_20260511_02_T2_thumb_small.jpeg",
+      "red_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/036/LC09_L2SP_185036_20260510_20260511_02_T2/LC09_L2SP_185036_20260510_20260511_02_T2_SR_B4.TIF",
+      "nir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/036/LC09_L2SP_185036_20260510_20260511_02_T2/LC09_L2SP_185036_20260510_20260511_02_T2_SR_B5.TIF",
+      "tir_url": null,
+      "swir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/036/LC09_L2SP_185036_20260510_20260511_02_T2/LC09_L2SP_185036_20260510_20260511_02_T2_SR_B6.TIF",
+      "damocles_node": {
+        "type": "SatelliteScene",
+        "collection": "landsat-c2l2-sr",
+        "source": "usgs_landsatlook",
+        "resolution_m": 30,
+        "use_for": [
+          "thermal_anomaly",
+          "ndvi",
+          "change_detection",
+          "land_use"
+        ],
+        "thermal_use": "Detect heat signatures \u2014 active fires, military activity",
+        "cypher_hint": "(:SatelliteScene {id: 'LC09_L2SP_185036_20260510_20260511_02_T2_SR', platform: 'LANDSAT_9', has_thermal: true}) -[:COVERS]->(:AOI)"
+      }
+    },
+    {
+      "id": "LC09_L2SP_185035_20260510_20260511_02_T2_SR",
+      "datetime": "2026-05-10T09:17:26.064931Z",
+      "platform": "LANDSAT_9",
+      "instruments": [
+        "OLI",
+        "TIRS"
+      ],
+      "cloud_cover_%": 45.96,
+      "wrs_path": "185",
+      "wrs_row": "035",
+      "processing_level": null,
+      "scene_id": "LC91850352026130LGN00",
+      "bbox": [
+        18.322684057868337,
+        34.98350249784809,
+        20.83973271095642,
+        37.087930326840244
+      ],
+      "available_bands": [
+        "thumbnail",
+        "reduced_resolution_browse",
+        "index",
+        "MTL.json",
+        "coastal",
+        "blue",
+        "green",
+        "red",
+        "nir08",
+        "swir16",
+        "swir22",
+        "qa_aerosol",
+        "qa_pixel",
+        "qa_radsat",
+        "ANG.txt",
+        "MTL.txt",
+        "MTL.xml"
+      ],
+      "thumbnail_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/035/LC09_L2SP_185035_20260510_20260511_02_T2/LC09_L2SP_185035_20260510_20260511_02_T2_thumb_small.jpeg",
+      "red_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/035/LC09_L2SP_185035_20260510_20260511_02_T2/LC09_L2SP_185035_20260510_20260511_02_T2_SR_B4.TIF",
+      "nir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/035/LC09_L2SP_185035_20260510_20260511_02_T2/LC09_L2SP_185035_20260510_20260511_02_T2_SR_B5.TIF",
+      "tir_url": null,
+      "swir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/035/LC09_L2SP_185035_20260510_20260511_02_T2/LC09_L2SP_185035_20260510_20260511_02_T2_SR_B6.TIF",
+      "damocles_node": {
+        "type": "SatelliteScene",
+        "collection": "landsat-c2l2-sr",
+        "source": "usgs_landsatlook",
+        "resolution_m": 30,
+        "use_for": [
+          "thermal_anomaly",
+          "ndvi",
+          "change_detection",
+          "land_use"
+        ],
+        "thermal_use": "Detect heat signatures \u2014 active fires, military activity",
+        "cypher_hint": "(:SatelliteScene {id: 'LC09_L2SP_185035_20260510_20260511_02_T2_SR', platform: 'LANDSAT_9', has_thermal: true}) -[:COVERS]->(:AOI)"
+      }
+    },
+    {
+      "id": "LC09_L2SP_185034_20260510_20260511_02_T2_SR",
+      "datetime": "2026-05-10T09:17:02.178151Z",
+      "platform": "LANDSAT_9",
+      "instruments": [
+        "OLI",
+        "TIRS"
+      ],
+      "cloud_cover_%": 98.56,
+      "wrs_path": "185",
+      "wrs_row": "034",
+      "processing_level": null,
+      "scene_id": "LC91850342026130LGN00",
+      "bbox": [
+        18.717701336736475,
+        36.413616212263406,
+        21.286458882010507,
+        38.52015487782838
+      ],
+      "available_bands": [
+        "thumbnail",
+        "reduced_resolution_browse",
+        "index",
+        "MTL.json",
+        "coastal",
+        "blue",
+        "green",
+        "red",
+        "nir08",
+        "swir16",
+        "swir22",
+        "qa_aerosol",
+        "qa_pixel",
+        "qa_radsat",
+        "ANG.txt",
+        "MTL.txt",
+        "MTL.xml"
+      ],
+      "thumbnail_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/034/LC09_L2SP_185034_20260510_20260511_02_T2/LC09_L2SP_185034_20260510_20260511_02_T2_thumb_small.jpeg",
+      "red_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/034/LC09_L2SP_185034_20260510_20260511_02_T2/LC09_L2SP_185034_20260510_20260511_02_T2_SR_B4.TIF",
+      "nir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/034/LC09_L2SP_185034_20260510_20260511_02_T2/LC09_L2SP_185034_20260510_20260511_02_T2_SR_B5.TIF",
+      "tir_url": null,
+      "swir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/034/LC09_L2SP_185034_20260510_20260511_02_T2/LC09_L2SP_185034_20260510_20260511_02_T2_SR_B6.TIF",
+      "damocles_node": {
+        "type": "SatelliteScene",
+        "collection": "landsat-c2l2-sr",
+        "source": "usgs_landsatlook",
+        "resolution_m": 30,
+        "use_for": [
+          "thermal_anomaly",
+          "ndvi",
+          "change_detection",
+          "land_use"
+        ],
+        "thermal_use": "Detect heat signatures \u2014 active fires, military activity",
+        "cypher_hint": "(:SatelliteScene {id: 'LC09_L2SP_185034_20260510_20260511_02_T2_SR', platform: 'LANDSAT_9', has_thermal: true}) -[:COVERS]->(:AOI)"
+      }
+    },
+    {
+      "id": "LC09_L2SP_185033_20260510_20260511_02_T2_SR",
+      "datetime": "2026-05-10T09:16:38.299844Z",
+      "platform": "LANDSAT_9",
+      "instruments": [
+        "OLI",
+        "TIRS"
+      ],
+      "cloud_cover_%": 100,
+      "wrs_path": "185",
+      "wrs_row": "033",
+      "processing_level": null,
+      "scene_id": "LC91850332026130LGN00",
+      "bbox": [
+        19.123300844030283,
+        37.84157032725163,
+        21.747610688172372,
+        39.950924831431564
+      ],
+      "available_bands": [
+        "thumbnail",
+        "reduced_resolution_browse",
+        "index",
+        "MTL.json",
+        "coastal",
+        "blue",
+        "green",
+        "red",
+        "nir08",
+        "swir16",
+        "swir22",
+        "qa_aerosol",
+        "qa_pixel",
+        "qa_radsat",
+        "ANG.txt",
+        "MTL.txt",
+        "MTL.xml"
+      ],
+      "thumbnail_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/033/LC09_L2SP_185033_20260510_20260511_02_T2/LC09_L2SP_185033_20260510_20260511_02_T2_thumb_small.jpeg",
+      "red_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/033/LC09_L2SP_185033_20260510_20260511_02_T2/LC09_L2SP_185033_20260510_20260511_02_T2_SR_B4.TIF",
+      "nir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/033/LC09_L2SP_185033_20260510_20260511_02_T2/LC09_L2SP_185033_20260510_20260511_02_T2_SR_B5.TIF",
+      "tir_url": null,
+      "swir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/033/LC09_L2SP_185033_20260510_20260511_02_T2/LC09_L2SP_185033_20260510_20260511_02_T2_SR_B6.TIF",
+      "damocles_node": {
+        "type": "SatelliteScene",
+        "collection": "landsat-c2l2-sr",
+        "source": "usgs_landsatlook",
+        "resolution_m": 30,
+        "use_for": [
+          "thermal_anomaly",
+          "ndvi",
+          "change_detection",
+          "land_use"
+        ],
+        "thermal_use": "Detect heat signatures \u2014 active fires, military activity",
+        "cypher_hint": "(:SatelliteScene {id: 'LC09_L2SP_185033_20260510_20260511_02_T2_SR', platform: 'LANDSAT_9', has_thermal: true}) -[:COVERS]->(:AOI)"
+      }
+    },
+    {
+      "id": "LC09_L2SP_185032_20260510_20260511_02_T1_SR",
+      "datetime": "2026-05-10T09:16:14.408828Z",
+      "platform": "LANDSAT_9",
+      "instruments": [
+        "OLI",
+        "TIRS"
+      ],
+      "cloud_cover_%": 96.16,
+      "wrs_path": "185",
+      "wrs_row": "032",
+      "processing_level": null,
+      "scene_id": "LC91850322026130LGN00",
+      "bbox": [
+        19.54047829030102,
+        39.269581923429556,
+        22.223869790298444,
+        41.38033297056465
+      ],
+      "available_bands": [
+        "thumbnail",
+        "reduced_resolution_browse",
+        "index",
+        "MTL.json",
+        "coastal",
+        "blue",
+        "green",
+        "red",
+        "nir08",
+        "swir16",
+        "swir22",
+        "qa_aerosol",
+        "qa_pixel",
+        "qa_radsat",
+        "ANG.txt",
+        "MTL.txt",
+        "MTL.xml"
+      ],
+      "thumbnail_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/032/LC09_L2SP_185032_20260510_20260511_02_T1/LC09_L2SP_185032_20260510_20260511_02_T1_thumb_small.jpeg",
+      "red_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/032/LC09_L2SP_185032_20260510_20260511_02_T1/LC09_L2SP_185032_20260510_20260511_02_T1_SR_B4.TIF",
+      "nir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/032/LC09_L2SP_185032_20260510_20260511_02_T1/LC09_L2SP_185032_20260510_20260511_02_T1_SR_B5.TIF",
+      "tir_url": null,
+      "swir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/032/LC09_L2SP_185032_20260510_20260511_02_T1/LC09_L2SP_185032_20260510_20260511_02_T1_SR_B6.TIF",
+      "damocles_node": {
+        "type": "SatelliteScene",
+        "collection": "landsat-c2l2-sr",
+        "source": "usgs_landsatlook",
+        "resolution_m": 30,
+        "use_for": [
+          "thermal_anomaly",
+          "ndvi",
+          "change_detection",
+          "land_use"
+        ],
+        "thermal_use": "Detect heat signatures \u2014 active fires, military activity",
+        "cypher_hint": "(:SatelliteScene {id: 'LC09_L2SP_185032_20260510_20260511_02_T1_SR', platform: 'LANDSAT_9', has_thermal: true}) -[:COVERS]->(:AOI)"
+      }
+    },
+    {
+      "id": "LC09_L2SP_185031_20260510_20260511_02_T1_SR",
+      "datetime": "2026-05-10T09:15:50.530521Z",
+      "platform": "LANDSAT_9",
+      "instruments": [
+        "OLI",
+        "TIRS"
+      ],
+      "cloud_cover_%": 68.15,
+      "wrs_path": "185",
+      "wrs_row": "031",
+      "processing_level": null,
+      "scene_id": "LC91850312026130LGN00",
+      "bbox": [
+        19.970446278425776,
+        40.69387157098225,
+        22.71778868559515,
+        42.80838722438745
+      ],
+      "available_bands": [
+        "thumbnail",
+        "reduced_resolution_browse",
+        "index",
+        "MTL.json",
+        "coastal",
+        "blue",
+        "green",
+        "red",
+        "nir08",
+        "swir16",
+        "swir22",
+        "qa_aerosol",
+        "qa_pixel",
+        "qa_radsat",
+        "ANG.txt",
+        "MTL.txt",
+        "MTL.xml"
+      ],
+      "thumbnail_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/031/LC09_L2SP_185031_20260510_20260511_02_T1/LC09_L2SP_185031_20260510_20260511_02_T1_thumb_small.jpeg",
+      "red_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/031/LC09_L2SP_185031_20260510_20260511_02_T1/LC09_L2SP_185031_20260510_20260511_02_T1_SR_B4.TIF",
+      "nir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/031/LC09_L2SP_185031_20260510_20260511_02_T1/LC09_L2SP_185031_20260510_20260511_02_T1_SR_B5.TIF",
+      "tir_url": null,
+      "swir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/031/LC09_L2SP_185031_20260510_20260511_02_T1/LC09_L2SP_185031_20260510_20260511_02_T1_SR_B6.TIF",
+      "damocles_node": {
+        "type": "SatelliteScene",
+        "collection": "landsat-c2l2-sr",
+        "source": "usgs_landsatlook",
+        "resolution_m": 30,
+        "use_for": [
+          "thermal_anomaly",
+          "ndvi",
+          "change_detection",
+          "land_use"
+        ],
+        "thermal_use": "Detect heat signatures \u2014 active fires, military activity",
+        "cypher_hint": "(:SatelliteScene {id: 'LC09_L2SP_185031_20260510_20260511_02_T1_SR', platform: 'LANDSAT_9', has_thermal: true}) -[:COVERS]->(:AOI)"
+      }
+    },
+    {
+      "id": "LC09_L2SP_185030_20260510_20260511_02_T1_SR",
+      "datetime": "2026-05-10T09:15:26.647977Z",
+      "platform": "LANDSAT_9",
+      "instruments": [
+        "OLI",
+        "TIRS"
+      ],
+      "cloud_cover_%": 17.59,
+      "wrs_path": "185",
+      "wrs_row": "030",
+      "processing_level": null,
+      "scene_id": "LC91850302026130LGN00",
+      "bbox": [
+        20.414456004913767,
+        42.11776796999097,
+        23.232588298684707,
+        44.23572153327761
+      ],
+      "available_bands": [
+        "thumbnail",
+        "reduced_resolution_browse",
+        "index",
+        "MTL.json",
+        "coastal",
+        "blue",
+        "green",
+        "red",
+        "nir08",
+        "swir16",
+        "swir22",
+        "qa_aerosol",
+        "qa_pixel",
+        "qa_radsat",
+        "ANG.txt",
+        "MTL.txt",
+        "MTL.xml"
+      ],
+      "thumbnail_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/030/LC09_L2SP_185030_20260510_20260511_02_T1/LC09_L2SP_185030_20260510_20260511_02_T1_thumb_small.jpeg",
+      "red_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/030/LC09_L2SP_185030_20260510_20260511_02_T1/LC09_L2SP_185030_20260510_20260511_02_T1_SR_B4.TIF",
+      "nir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/030/LC09_L2SP_185030_20260510_20260511_02_T1/LC09_L2SP_185030_20260510_20260511_02_T1_SR_B5.TIF",
+      "tir_url": null,
+      "swir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/185/030/LC09_L2SP_185030_20260510_20260511_02_T1/LC09_L2SP_185030_20260510_20260511_02_T1_SR_B6.TIF",
+      "damocles_node": {
+        "type": "SatelliteScene",
+        "collection": "landsat-c2l2-sr",
+        "source": "usgs_landsatlook",
+        "resolution_m": 30,
+        "use_for": [
+          "thermal_anomaly",
+          "ndvi",
+          "change_detection",
+          "land_use"
+        ],
+        "thermal_use": "Detect heat signatures \u2014 active fires, military activity",
+        "cypher_hint": "(:SatelliteScene {id: 'LC09_L2SP_185030_20260510_20260511_02_T1_SR', platform: 'LANDSAT_9', has_thermal: true}) -[:COVERS]->(:AOI)"
+      }
+    },
+    {
+      "id": "LC09_L2SP_178036_20260509_20260511_02_T2_SR",
+      "datetime": "2026-05-09T08:34:35.401610Z",
+      "platform": "LANDSAT_9",
+      "instruments": [
+        "OLI",
+        "TIRS"
+      ],
+      "cloud_cover_%": 2.91,
+      "wrs_path": "178",
+      "wrs_row": "036",
+      "processing_level": null,
+      "scene_id": "LC91780362026129LGN00",
+      "bbox": [
+        28.750079911632387,
+        33.551995375228145,
+        31.219307864410794,
+        35.65430718942615
+      ],
+      "available_bands": [
+        "thumbnail",
+        "reduced_resolution_browse",
+        "index",
+        "MTL.json",
+        "coastal",
+        "blue",
+        "green",
+        "red",
+        "nir08",
+        "swir16",
+        "swir22",
+        "qa_aerosol",
+        "qa_pixel",
+        "qa_radsat",
+        "ANG.txt",
+        "MTL.txt",
+        "MTL.xml"
+      ],
+      "thumbnail_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/178/036/LC09_L2SP_178036_20260509_20260511_02_T2/LC09_L2SP_178036_20260509_20260511_02_T2_thumb_small.jpeg",
+      "red_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/178/036/LC09_L2SP_178036_20260509_20260511_02_T2/LC09_L2SP_178036_20260509_20260511_02_T2_SR_B4.TIF",
+      "nir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/178/036/LC09_L2SP_178036_20260509_20260511_02_T2/LC09_L2SP_178036_20260509_20260511_02_T2_SR_B5.TIF",
+      "tir_url": null,
+      "swir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/178/036/LC09_L2SP_178036_20260509_20260511_02_T2/LC09_L2SP_178036_20260509_20260511_02_T2_SR_B6.TIF",
+      "damocles_node": {
+        "type": "SatelliteScene",
+        "collection": "landsat-c2l2-sr",
+        "source": "usgs_landsatlook",
+        "resolution_m": 30,
+        "use_for": [
+          "thermal_anomaly",
+          "ndvi",
+          "change_detection",
+          "land_use"
+        ],
+        "thermal_use": "Detect heat signatures \u2014 active fires, military activity",
+        "cypher_hint": "(:SatelliteScene {id: 'LC09_L2SP_178036_20260509_20260511_02_T2_SR', platform: 'LANDSAT_9', has_thermal: true}) -[:COVERS]->(:AOI)"
+      }
+    },
+    {
+      "id": "LC09_L2SP_178035_20260509_20260511_02_T1_SR",
+      "datetime": "2026-05-09T08:34:11.514830Z",
+      "platform": "LANDSAT_9",
+      "instruments": [
+        "OLI",
+        "TIRS"
+      ],
+      "cloud_cover_%": 11.95,
+      "wrs_path": "178",
+      "wrs_row": "035",
+      "processing_level": null,
+      "scene_id": "LC91780352026129LGN00",
+      "bbox": [
+        29.135790763449215,
+        34.983496883979015,
+        31.652797355403795,
+        37.08755839778313
+      ],
+      "available_bands": [
+        "thumbnail",
+        "reduced_resolution_browse",
+        "index",
+        "MTL.json",
+        "coastal",
+        "blue",
+        "green",
+        "red",
+        "nir08",
+        "swir16",
+        "swir22",
+        "qa_aerosol",
+        "qa_pixel",
+        "qa_radsat",
+        "ANG.txt",
+        "MTL.txt",
+        "MTL.xml"
+      ],
+      "thumbnail_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/178/035/LC09_L2SP_178035_20260509_20260511_02_T1/LC09_L2SP_178035_20260509_20260511_02_T1_thumb_small.jpeg",
+      "red_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/178/035/LC09_L2SP_178035_20260509_20260511_02_T1/LC09_L2SP_178035_20260509_20260511_02_T1_SR_B4.TIF",
+      "nir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/178/035/LC09_L2SP_178035_20260509_20260511_02_T1/LC09_L2SP_178035_20260509_20260511_02_T1_SR_B5.TIF",
+      "tir_url": null,
+      "swir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/178/035/LC09_L2SP_178035_20260509_20260511_02_T1/LC09_L2SP_178035_20260509_20260511_02_T1_SR_B6.TIF",
+      "damocles_node": {
+        "type": "SatelliteScene",
+        "collection": "landsat-c2l2-sr",
+        "source": "usgs_landsatlook",
+        "resolution_m": 30,
+        "use_for": [
+          "thermal_anomaly",
+          "ndvi",
+          "change_detection",
+          "land_use"
+        ],
+        "thermal_use": "Detect heat signatures \u2014 active fires, military activity",
+        "cypher_hint": "(:SatelliteScene {id: 'LC09_L2SP_178035_20260509_20260511_02_T1_SR', platform: 'LANDSAT_9', has_thermal: true}) -[:COVERS]->(:AOI)"
+      }
+    },
+    {
+      "id": "LC09_L2SP_178034_20260509_20260511_02_T1_SR",
+      "datetime": "2026-05-09T08:33:47.628050Z",
+      "platform": "LANDSAT_9",
+      "instruments": [
+        "OLI",
+        "TIRS"
+      ],
+      "cloud_cover_%": 53.25,
+      "wrs_path": "178",
+      "wrs_row": "034",
+      "processing_level": null,
+      "scene_id": "LC91780342026129LGN00",
+      "bbox": [
+        29.53306278519722,
+        36.413352828316484,
+        32.09761250447521,
+        38.51978694035606
+      ],
+      "available_bands": [
+        "thumbnail",
+        "reduced_resolution_browse",
+        "index",
+        "MTL.json",
+        "coastal",
+        "blue",
+        "green",
+        "red",
+        "nir08",
+        "swir16",
+        "swir22",
+        "qa_aerosol",
+        "qa_pixel",
+        "qa_radsat",
+        "ANG.txt",
+        "MTL.txt",
+        "MTL.xml"
+      ],
+      "thumbnail_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/178/034/LC09_L2SP_178034_20260509_20260511_02_T1/LC09_L2SP_178034_20260509_20260511_02_T1_thumb_small.jpeg",
+      "red_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/178/034/LC09_L2SP_178034_20260509_20260511_02_T1/LC09_L2SP_178034_20260509_20260511_02_T1_SR_B4.TIF",
+      "nir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/178/034/LC09_L2SP_178034_20260509_20260511_02_T1/LC09_L2SP_178034_20260509_20260511_02_T1_SR_B5.TIF",
+      "tir_url": null,
+      "swir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/178/034/LC09_L2SP_178034_20260509_20260511_02_T1/LC09_L2SP_178034_20260509_20260511_02_T1_SR_B6.TIF",
+      "damocles_node": {
+        "type": "SatelliteScene",
+        "collection": "landsat-c2l2-sr",
+        "source": "usgs_landsatlook",
+        "resolution_m": 30,
+        "use_for": [
+          "thermal_anomaly",
+          "ndvi",
+          "change_detection",
+          "land_use"
+        ],
+        "thermal_use": "Detect heat signatures \u2014 active fires, military activity",
+        "cypher_hint": "(:SatelliteScene {id: 'LC09_L2SP_178034_20260509_20260511_02_T1_SR', platform: 'LANDSAT_9', has_thermal: true}) -[:COVERS]->(:AOI)"
+      }
+    },
+    {
+      "id": "LC09_L2SP_178033_20260509_20260511_02_T1_SR",
+      "datetime": "2026-05-09T08:33:23.745507Z",
+      "platform": "LANDSAT_9",
+      "instruments": [
+        "OLI",
+        "TIRS"
+      ],
+      "cloud_cover_%": 59.29,
+      "wrs_path": "178",
+      "wrs_row": "033",
+      "processing_level": null,
+      "scene_id": "LC91780332026129LGN00",
+      "bbox": [
+        29.93789297373902,
+        37.84239768500362,
+        32.55887886339194,
+        39.950543070105724
+      ],
+      "available_bands": [
+        "thumbnail",
+        "reduced_resolution_browse",
+        "index",
+        "MTL.json",
+        "coastal",
+        "blue",
+        "green",
+        "red",
+        "nir08",
+        "swir16",
+        "swir22",
+        "qa_aerosol",
+        "qa_pixel",
+        "qa_radsat",
+        "ANG.txt",
+        "MTL.txt",
+        "MTL.xml"
+      ],
+      "thumbnail_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/178/033/LC09_L2SP_178033_20260509_20260511_02_T1/LC09_L2SP_178033_20260509_20260511_02_T1_thumb_small.jpeg",
+      "red_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/178/033/LC09_L2SP_178033_20260509_20260511_02_T1/LC09_L2SP_178033_20260509_20260511_02_T1_SR_B4.TIF",
+      "nir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/178/033/LC09_L2SP_178033_20260509_20260511_02_T1/LC09_L2SP_178033_20260509_20260511_02_T1_SR_B5.TIF",
+      "tir_url": null,
+      "swir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/178/033/LC09_L2SP_178033_20260509_20260511_02_T1/LC09_L2SP_178033_20260509_20260511_02_T1_SR_B6.TIF",
+      "damocles_node": {
+        "type": "SatelliteScene",
+        "collection": "landsat-c2l2-sr",
+        "source": "usgs_landsatlook",
+        "resolution_m": 30,
+        "use_for": [
+          "thermal_anomaly",
+          "ndvi",
+          "change_detection",
+          "land_use"
+        ],
+        "thermal_use": "Detect heat signatures \u2014 active fires, military activity",
+        "cypher_hint": "(:SatelliteScene {id: 'LC09_L2SP_178033_20260509_20260511_02_T1_SR', platform: 'LANDSAT_9', has_thermal: true}) -[:COVERS]->(:AOI)"
+      }
+    },
+    {
+      "id": "LC09_L2SP_187036_20260508_20260509_02_T2_SR",
+      "datetime": "2026-05-08T09:30:13.740472Z",
+      "platform": "LANDSAT_9",
+      "instruments": [
+        "OLI",
+        "TIRS"
+      ],
+      "cloud_cover_%": 62.24,
+      "wrs_path": "187",
+      "wrs_row": "036",
+      "processing_level": null,
+      "scene_id": "LC91870362026128LGN00",
+      "bbox": [
+        14.843164393444328,
+        33.5520834203362,
+        17.31210371405176,
+        35.654527864755806
+      ],
+      "available_bands": [
+        "thumbnail",
+        "reduced_resolution_browse",
+        "index",
+        "MTL.json",
+        "coastal",
+        "blue",
+        "green",
+        "red",
+        "nir08",
+        "swir16",
+        "swir22",
+        "qa_aerosol",
+        "qa_pixel",
+        "qa_radsat",
+        "ANG.txt",
+        "MTL.txt",
+        "MTL.xml"
+      ],
+      "thumbnail_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/036/LC09_L2SP_187036_20260508_20260509_02_T2/LC09_L2SP_187036_20260508_20260509_02_T2_thumb_small.jpeg",
+      "red_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/036/LC09_L2SP_187036_20260508_20260509_02_T2/LC09_L2SP_187036_20260508_20260509_02_T2_SR_B4.TIF",
+      "nir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/036/LC09_L2SP_187036_20260508_20260509_02_T2/LC09_L2SP_187036_20260508_20260509_02_T2_SR_B5.TIF",
+      "tir_url": null,
+      "swir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/036/LC09_L2SP_187036_20260508_20260509_02_T2/LC09_L2SP_187036_20260508_20260509_02_T2_SR_B6.TIF",
+      "damocles_node": {
+        "type": "SatelliteScene",
+        "collection": "landsat-c2l2-sr",
+        "source": "usgs_landsatlook",
+        "resolution_m": 30,
+        "use_for": [
+          "thermal_anomaly",
+          "ndvi",
+          "change_detection",
+          "land_use"
+        ],
+        "thermal_use": "Detect heat signatures \u2014 active fires, military activity",
+        "cypher_hint": "(:SatelliteScene {id: 'LC09_L2SP_187036_20260508_20260509_02_T2_SR', platform: 'LANDSAT_9', has_thermal: true}) -[:COVERS]->(:AOI)"
+      }
+    },
+    {
+      "id": "LC09_L2SP_187035_20260508_20260509_02_T2_SR",
+      "datetime": "2026-05-08T09:29:49.853691Z",
+      "platform": "LANDSAT_9",
+      "instruments": [
+        "OLI",
+        "TIRS"
+      ],
+      "cloud_cover_%": 31.01,
+      "wrs_path": "187",
+      "wrs_row": "035",
+      "processing_level": null,
+      "scene_id": "LC91870352026128LGN00",
+      "bbox": [
+        15.228471453789178,
+        34.98367498778818,
+        17.74574051859116,
+        37.0881673539311
+      ],
+      "available_bands": [
+        "thumbnail",
+        "reduced_resolution_browse",
+        "index",
+        "MTL.json",
+        "coastal",
+        "blue",
+        "green",
+        "red",
+        "nir08",
+        "swir16",
+        "swir22",
+        "qa_aerosol",
+        "qa_pixel",
+        "qa_radsat",
+        "ANG.txt",
+        "MTL.txt",
+        "MTL.xml"
+      ],
+      "thumbnail_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/035/LC09_L2SP_187035_20260508_20260509_02_T2/LC09_L2SP_187035_20260508_20260509_02_T2_thumb_small.jpeg",
+      "red_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/035/LC09_L2SP_187035_20260508_20260509_02_T2/LC09_L2SP_187035_20260508_20260509_02_T2_SR_B4.TIF",
+      "nir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/035/LC09_L2SP_187035_20260508_20260509_02_T2/LC09_L2SP_187035_20260508_20260509_02_T2_SR_B5.TIF",
+      "tir_url": null,
+      "swir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/035/LC09_L2SP_187035_20260508_20260509_02_T2/LC09_L2SP_187035_20260508_20260509_02_T2_SR_B6.TIF",
+      "damocles_node": {
+        "type": "SatelliteScene",
+        "collection": "landsat-c2l2-sr",
+        "source": "usgs_landsatlook",
+        "resolution_m": 30,
+        "use_for": [
+          "thermal_anomaly",
+          "ndvi",
+          "change_detection",
+          "land_use"
+        ],
+        "thermal_use": "Detect heat signatures \u2014 active fires, military activity",
+        "cypher_hint": "(:SatelliteScene {id: 'LC09_L2SP_187035_20260508_20260509_02_T2_SR', platform: 'LANDSAT_9', has_thermal: true}) -[:COVERS]->(:AOI)"
+      }
+    },
+    {
+      "id": "LC09_L2SP_187034_20260508_20260509_02_T1_SR",
+      "datetime": "2026-05-08T09:29:25.966913Z",
+      "platform": "LANDSAT_9",
+      "instruments": [
+        "OLI",
+        "TIRS"
+      ],
+      "cloud_cover_%": 12.32,
+      "wrs_path": "187",
+      "wrs_row": "034",
+      "processing_level": null,
+      "scene_id": "LC91870342026128LGN00",
+      "bbox": [
+        15.623762210133375,
+        36.41351530656769,
+        18.192983851682136,
+        38.520233210798516
+      ],
+      "available_bands": [
+        "thumbnail",
+        "reduced_resolution_browse",
+        "index",
+        "MTL.json",
+        "coastal",
+        "blue",
+        "green",
+        "red",
+        "nir08",
+        "swir16",
+        "swir22",
+        "qa_aerosol",
+        "qa_pixel",
+        "qa_radsat",
+        "ANG.txt",
+        "MTL.txt",
+        "MTL.xml"
+      ],
+      "thumbnail_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/034/LC09_L2SP_187034_20260508_20260509_02_T1/LC09_L2SP_187034_20260508_20260509_02_T1_thumb_small.jpeg",
+      "red_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/034/LC09_L2SP_187034_20260508_20260509_02_T1/LC09_L2SP_187034_20260508_20260509_02_T1_SR_B4.TIF",
+      "nir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/034/LC09_L2SP_187034_20260508_20260509_02_T1/LC09_L2SP_187034_20260508_20260509_02_T1_SR_B5.TIF",
+      "tir_url": null,
+      "swir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/034/LC09_L2SP_187034_20260508_20260509_02_T1/LC09_L2SP_187034_20260508_20260509_02_T1_SR_B6.TIF",
+      "damocles_node": {
+        "type": "SatelliteScene",
+        "collection": "landsat-c2l2-sr",
+        "source": "usgs_landsatlook",
+        "resolution_m": 30,
+        "use_for": [
+          "thermal_anomaly",
+          "ndvi",
+          "change_detection",
+          "land_use"
+        ],
+        "thermal_use": "Detect heat signatures \u2014 active fires, military activity",
+        "cypher_hint": "(:SatelliteScene {id: 'LC09_L2SP_187034_20260508_20260509_02_T1_SR', platform: 'LANDSAT_9', has_thermal: true}) -[:COVERS]->(:AOI)"
+      }
+    },
+    {
+      "id": "LC09_L2SP_187033_20260508_20260509_02_T1_SR",
+      "datetime": "2026-05-08T09:29:02.088604Z",
+      "platform": "LANDSAT_9",
+      "instruments": [
+        "OLI",
+        "TIRS"
+      ],
+      "cloud_cover_%": 45.61,
+      "wrs_path": "187",
+      "wrs_row": "033",
+      "processing_level": null,
+      "scene_id": "LC91870332026128LGN00",
+      "bbox": [
+        16.029983321770565,
+        37.841716269874624,
+        18.654025280579383,
+        39.95084573681339
+      ],
+      "available_bands": [
+        "thumbnail",
+        "reduced_resolution_browse",
+        "index",
+        "MTL.json",
+        "coastal",
+        "blue",
+        "green",
+        "red",
+        "nir08",
+        "swir16",
+        "swir22",
+        "qa_aerosol",
+        "qa_pixel",
+        "qa_radsat",
+        "ANG.txt",
+        "MTL.txt",
+        "MTL.xml"
+      ],
+      "thumbnail_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/033/LC09_L2SP_187033_20260508_20260509_02_T1/LC09_L2SP_187033_20260508_20260509_02_T1_thumb_small.jpeg",
+      "red_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/033/LC09_L2SP_187033_20260508_20260509_02_T1/LC09_L2SP_187033_20260508_20260509_02_T1_SR_B4.TIF",
+      "nir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/033/LC09_L2SP_187033_20260508_20260509_02_T1/LC09_L2SP_187033_20260508_20260509_02_T1_SR_B5.TIF",
+      "tir_url": null,
+      "swir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/033/LC09_L2SP_187033_20260508_20260509_02_T1/LC09_L2SP_187033_20260508_20260509_02_T1_SR_B6.TIF",
+      "damocles_node": {
+        "type": "SatelliteScene",
+        "collection": "landsat-c2l2-sr",
+        "source": "usgs_landsatlook",
+        "resolution_m": 30,
+        "use_for": [
+          "thermal_anomaly",
+          "ndvi",
+          "change_detection",
+          "land_use"
+        ],
+        "thermal_use": "Detect heat signatures \u2014 active fires, military activity",
+        "cypher_hint": "(:SatelliteScene {id: 'LC09_L2SP_187033_20260508_20260509_02_T1_SR', platform: 'LANDSAT_9', has_thermal: true}) -[:COVERS]->(:AOI)"
+      }
+    },
+    {
+      "id": "LC09_L2SP_187032_20260508_20260509_02_T2_SR",
+      "datetime": "2026-05-08T09:28:38.206061Z",
+      "platform": "LANDSAT_9",
+      "instruments": [
+        "OLI",
+        "TIRS"
+      ],
+      "cloud_cover_%": 77.64,
+      "wrs_path": "187",
+      "wrs_row": "032",
+      "processing_level": null,
+      "scene_id": "LC91870322026128LGN00",
+      "bbox": [
+        16.44610215507265,
+        39.26860615301363,
+        19.130901605317366,
+        41.38038564967678
+      ],
+      "available_bands": [
+        "thumbnail",
+        "reduced_resolution_browse",
+        "index",
+        "MTL.json",
+        "coastal",
+        "blue",
+        "green",
+        "red",
+        "nir08",
+        "swir16",
+        "swir22",
+        "qa_aerosol",
+        "qa_pixel",
+        "qa_radsat",
+        "ANG.txt",
+        "MTL.txt",
+        "MTL.xml"
+      ],
+      "thumbnail_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/032/LC09_L2SP_187032_20260508_20260509_02_T2/LC09_L2SP_187032_20260508_20260509_02_T2_thumb_small.jpeg",
+      "red_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/032/LC09_L2SP_187032_20260508_20260509_02_T2/LC09_L2SP_187032_20260508_20260509_02_T2_SR_B4.TIF",
+      "nir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/032/LC09_L2SP_187032_20260508_20260509_02_T2/LC09_L2SP_187032_20260508_20260509_02_T2_SR_B5.TIF",
+      "tir_url": null,
+      "swir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/032/LC09_L2SP_187032_20260508_20260509_02_T2/LC09_L2SP_187032_20260508_20260509_02_T2_SR_B6.TIF",
+      "damocles_node": {
+        "type": "SatelliteScene",
+        "collection": "landsat-c2l2-sr",
+        "source": "usgs_landsatlook",
+        "resolution_m": 30,
+        "use_for": [
+          "thermal_anomaly",
+          "ndvi",
+          "change_detection",
+          "land_use"
+        ],
+        "thermal_use": "Detect heat signatures \u2014 active fires, military activity",
+        "cypher_hint": "(:SatelliteScene {id: 'LC09_L2SP_187032_20260508_20260509_02_T2_SR', platform: 'LANDSAT_9', has_thermal: true}) -[:COVERS]->(:AOI)"
+      }
+    },
+    {
+      "id": "LC09_L2SP_187031_20260508_20260509_02_T1_SR",
+      "datetime": "2026-05-08T09:28:14.323517Z",
+      "platform": "LANDSAT_9",
+      "instruments": [
+        "OLI",
+        "TIRS"
+      ],
+      "cloud_cover_%": 100,
+      "wrs_path": "187",
+      "wrs_row": "031",
+      "processing_level": null,
+      "scene_id": "LC91870312026128LGN00",
+      "bbox": [
+        16.876015479356973,
+        40.69368711871683,
+        19.622590439771255,
+        42.80879305683368
+      ],
+      "available_bands": [
+        "thumbnail",
+        "reduced_resolution_browse",
+        "index",
+        "MTL.json",
+        "coastal",
+        "blue",
+        "green",
+        "red",
+        "nir08",
+        "swir16",
+        "swir22",
+        "qa_aerosol",
+        "qa_pixel",
+        "qa_radsat",
+        "ANG.txt",
+        "MTL.txt",
+        "MTL.xml"
+      ],
+      "thumbnail_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/031/LC09_L2SP_187031_20260508_20260509_02_T1/LC09_L2SP_187031_20260508_20260509_02_T1_thumb_small.jpeg",
+      "red_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/031/LC09_L2SP_187031_20260508_20260509_02_T1/LC09_L2SP_187031_20260508_20260509_02_T1_SR_B4.TIF",
+      "nir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/031/LC09_L2SP_187031_20260508_20260509_02_T1/LC09_L2SP_187031_20260508_20260509_02_T1_SR_B5.TIF",
+      "tir_url": null,
+      "swir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/031/LC09_L2SP_187031_20260508_20260509_02_T1/LC09_L2SP_187031_20260508_20260509_02_T1_SR_B6.TIF",
+      "damocles_node": {
+        "type": "SatelliteScene",
+        "collection": "landsat-c2l2-sr",
+        "source": "usgs_landsatlook",
+        "resolution_m": 30,
+        "use_for": [
+          "thermal_anomaly",
+          "ndvi",
+          "change_detection",
+          "land_use"
+        ],
+        "thermal_use": "Detect heat signatures \u2014 active fires, military activity",
+        "cypher_hint": "(:SatelliteScene {id: 'LC09_L2SP_187031_20260508_20260509_02_T1_SR', platform: 'LANDSAT_9', has_thermal: true}) -[:COVERS]->(:AOI)"
+      }
+    },
+    {
+      "id": "LC09_L2SP_187030_20260508_20260509_02_T1_SR",
+      "datetime": "2026-05-08T09:27:50.440973Z",
+      "platform": "LANDSAT_9",
+      "instruments": [
+        "OLI",
+        "TIRS"
+      ],
+      "cloud_cover_%": 99.96,
+      "wrs_path": "187",
+      "wrs_row": "030",
+      "processing_level": null,
+      "scene_id": "LC91870302026128LGN00",
+      "bbox": [
+        17.319252180238486,
+        42.117208109910536,
+        20.137316137949714,
+        44.23529773544593
+      ],
+      "available_bands": [
+        "thumbnail",
+        "reduced_resolution_browse",
+        "index",
+        "MTL.json",
+        "coastal",
+        "blue",
+        "green",
+        "red",
+        "nir08",
+        "swir16",
+        "swir22",
+        "qa_aerosol",
+        "qa_pixel",
+        "qa_radsat",
+        "ANG.txt",
+        "MTL.txt",
+        "MTL.xml"
+      ],
+      "thumbnail_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/030/LC09_L2SP_187030_20260508_20260509_02_T1/LC09_L2SP_187030_20260508_20260509_02_T1_thumb_small.jpeg",
+      "red_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/030/LC09_L2SP_187030_20260508_20260509_02_T1/LC09_L2SP_187030_20260508_20260509_02_T1_SR_B4.TIF",
+      "nir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/030/LC09_L2SP_187030_20260508_20260509_02_T1/LC09_L2SP_187030_20260508_20260509_02_T1_SR_B5.TIF",
+      "tir_url": null,
+      "swir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/187/030/LC09_L2SP_187030_20260508_20260509_02_T1/LC09_L2SP_187030_20260508_20260509_02_T1_SR_B6.TIF",
+      "damocles_node": {
+        "type": "SatelliteScene",
+        "collection": "landsat-c2l2-sr",
+        "source": "usgs_landsatlook",
+        "resolution_m": 30,
+        "use_for": [
+          "thermal_anomaly",
+          "ndvi",
+          "change_detection",
+          "land_use"
+        ],
+        "thermal_use": "Detect heat signatures \u2014 active fires, military activity",
+        "cypher_hint": "(:SatelliteScene {id: 'LC09_L2SP_187030_20260508_20260509_02_T1_SR', platform: 'LANDSAT_9', has_thermal: true}) -[:COVERS]->(:AOI)"
+      }
+    },
+    {
+      "id": "LC09_L2SP_180036_20260507_20260508_02_T1_SR",
+      "datetime": "2026-05-07T08:46:59.131068Z",
+      "platform": "LANDSAT_9",
+      "instruments": [
+        "OLI",
+        "TIRS"
+      ],
+      "cloud_cover_%": 0.02,
+      "wrs_path": "180",
+      "wrs_row": "036",
+      "processing_level": null,
+      "scene_id": "LC91800362026127LGN00",
+      "bbox": [
+        25.656798493965287,
+        33.552075686124994,
+        28.125755158200832,
+        35.65468404259799
+      ],
+      "available_bands": [
+        "thumbnail",
+        "reduced_resolution_browse",
+        "index",
+        "MTL.json",
+        "coastal",
+        "blue",
+        "green",
+        "red",
+        "nir08",
+        "swir16",
+        "swir22",
+        "qa_aerosol",
+        "qa_pixel",
+        "qa_radsat",
+        "ANG.txt",
+        "MTL.txt",
+        "MTL.xml"
+      ],
+      "thumbnail_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/180/036/LC09_L2SP_180036_20260507_20260508_02_T1/LC09_L2SP_180036_20260507_20260508_02_T1_thumb_small.jpeg",
+      "red_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/180/036/LC09_L2SP_180036_20260507_20260508_02_T1/LC09_L2SP_180036_20260507_20260508_02_T1_SR_B4.TIF",
+      "nir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/180/036/LC09_L2SP_180036_20260507_20260508_02_T1/LC09_L2SP_180036_20260507_20260508_02_T1_SR_B5.TIF",
+      "tir_url": null,
+      "swir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/180/036/LC09_L2SP_180036_20260507_20260508_02_T1/LC09_L2SP_180036_20260507_20260508_02_T1_SR_B6.TIF",
+      "damocles_node": {
+        "type": "SatelliteScene",
+        "collection": "landsat-c2l2-sr",
+        "source": "usgs_landsatlook",
+        "resolution_m": 30,
+        "use_for": [
+          "thermal_anomaly",
+          "ndvi",
+          "change_detection",
+          "land_use"
+        ],
+        "thermal_use": "Detect heat signatures \u2014 active fires, military activity",
+        "cypher_hint": "(:SatelliteScene {id: 'LC09_L2SP_180036_20260507_20260508_02_T1_SR', platform: 'LANDSAT_9', has_thermal: true}) -[:COVERS]->(:AOI)"
+      }
+    },
+    {
+      "id": "LC09_L2SP_180035_20260507_20260508_02_T1_SR",
+      "datetime": "2026-05-07T08:46:35.248525Z",
+      "platform": "LANDSAT_9",
+      "instruments": [
+        "OLI",
+        "TIRS"
+      ],
+      "cloud_cover_%": 0.12,
+      "wrs_path": "180",
+      "wrs_row": "035",
+      "processing_level": null,
+      "scene_id": "LC91800352026127LGN00",
+      "bbox": [
+        26.04193497244533,
+        34.983398805556384,
+        28.55900862270853,
+        37.087653676209776
+      ],
+      "available_bands": [
+        "thumbnail",
+        "reduced_resolution_browse",
+        "index",
+        "MTL.json",
+        "coastal",
+        "blue",
+        "green",
+        "red",
+        "nir08",
+        "swir16",
+        "swir22",
+        "qa_aerosol",
+        "qa_pixel",
+        "qa_radsat",
+        "ANG.txt",
+        "MTL.txt",
+        "MTL.xml"
+      ],
+      "thumbnail_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/180/035/LC09_L2SP_180035_20260507_20260508_02_T1/LC09_L2SP_180035_20260507_20260508_02_T1_thumb_small.jpeg",
+      "red_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/180/035/LC09_L2SP_180035_20260507_20260508_02_T1/LC09_L2SP_180035_20260507_20260508_02_T1_SR_B4.TIF",
+      "nir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/180/035/LC09_L2SP_180035_20260507_20260508_02_T1/LC09_L2SP_180035_20260507_20260508_02_T1_SR_B5.TIF",
+      "tir_url": null,
+      "swir_url": "https://landsatlook.usgs.gov/data/collection02/level-2/standard/oli-tirs/2026/180/035/LC09_L2SP_180035_20260507_20260508_02_T1/LC09_L2SP_180035_20260507_20260508_02_T1_SR_B6.TIF",
+      "damocles_node": {
+        "type": "SatelliteScene",
+        "collection": "landsat-c2l2-sr",
+        "source": "usgs_landsatlook",
+        "resolution_m": 30,
+        "use_for": [
+          "thermal_anomaly",
+          "ndvi",
+          "change_detection",
+          "land_use"
+        ],
+        "thermal_use": "Detect heat signatures \u2014 active fires, military activity",
+        "cypher_hint": "(:SatelliteScene {id: 'LC09_L2SP_180035_20260507_20260508_02_T1_SR', platform: 'LANDSAT_9', has_thermal: true}) -[:COVERS]->(:AOI)"
+      }
+    }
+  ]
+}

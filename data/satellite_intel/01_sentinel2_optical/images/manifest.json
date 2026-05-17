@@ -1,0 +1,45 @@
+{
+  "total_downloaded": 5,
+  "scenes": [
+    {
+      "id": "S2C_34SGH_20260512_0_L2A",
+      "date": "2026-05-12",
+      "cloud_cover_%": 0.01,
+      "files": {
+        "thumbnail_jpg": "data/satellite_intel/01_sentinel2_optical/images/S2C_34SGH_20260512_0_L2A_thumbnail.jpg"
+      }
+    },
+    {
+      "id": "S2C_35SKC_20260512_0_L2A",
+      "date": "2026-05-12",
+      "cloud_cover_%": 0.03,
+      "files": {
+        "thumbnail_jpg": "data/satellite_intel/01_sentinel2_optical/images/S2C_35SKC_20260512_0_L2A_thumbnail.jpg"
+      }
+    },
+    {
+      "id": "S2C_34TGK_20260512_0_L2A",
+      "date": "2026-05-12",
+      "cloud_cover_%": 0.08,
+      "files": {
+        "thumbnail_jpg": "data/satellite_intel/01_sentinel2_optical/images/S2C_34TGK_20260512_0_L2A_thumbnail.jpg"
+      }
+    },
+    {
+      "id": "S2C_34SFG_20260512_0_L2A",
+      "date": "2026-05-12",
+      "cloud_cover_%": 0.61,
+      "files": {
+        "thumbnail_jpg": "data/satellite_intel/01_sentinel2_optical/images/S2C_34SFG_20260512_0_L2A_thumbnail.jpg"
+      }
+    },
+    {
+      "id": "S2C_34SEH_20260512_0_L2A",
+      "date": "2026-05-12",
+      "cloud_cover_%": 1.93,
+      "files": {
+        "thumbnail_jpg": "data/satellite_intel/01_sentinel2_optical/images/S2C_34SEH_20260512_0_L2A_thumbnail.jpg"
+      }
+    }
+  ]
+}

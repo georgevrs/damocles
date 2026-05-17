@@ -1,0 +1,312 @@
+{
+  "source": "NASA EONET v3",
+  "endpoint": "https://eonet.gsfc.nasa.gov/api/v3/events",
+  "greek_bbox": "17,31,37,45",
+  "fetched_at": "2026-05-12T21:09:42.260335+00:00",
+  "what_it_gives": [
+    "Real-time natural events: wildfires, storms, volcanoes, floods",
+    "Geolocated with lat/lon \u2014 maps directly onto Damocles map",
+    "No API key required",
+    "Categories: Wildfires, Severe Storms, Volcanoes, Sea and Lake Ice, etc.",
+    "Links to NASA source imagery for each event"
+  ],
+  "damocles_use_cases": [
+    "Wildfire near Evros \u2192 corroborate with Sentinel-2 thermal",
+    "Severe storm \u2192 explain SAR noise / dark vessel false positives",
+    "Provides environmental context for agent reasoning prompts",
+    "Already partially integrated in backend/api/external.py"
+  ],
+  "regional_events_90d": [],
+  "global_open_events_sample": [
+    {
+      "id": "EONET_20061",
+      "title": "rx-Young 1 Prescribed Fire, Jefferson, Wisconsin",
+      "description": null,
+      "categories": [
+        "Wildfires"
+      ],
+      "status": null,
+      "sources": [
+        "https://irwin.doi.gov/observer/incidents/9d3d3cda-00ae-4b33-b930-ad5d3e3655a2"
+      ],
+      "latest_date": "2026-05-11T13:22:00Z",
+      "latest_coords": [
+        -88.630401,
+        42.8455985
+      ],
+      "geometry_type": "Point",
+      "total_observations": 1,
+      "damocles_node": {
+        "type": "NaturalEvent",
+        "source": "nasa_eonet",
+        "use_for": [
+          "wildfire_alert",
+          "storm_corroboration",
+          "context_layer"
+        ],
+        "cypher_hint": "(:NaturalEvent {id: 'EONET_20061', category: 'Wildfires'})-[:OCCURS_NEAR]->(:AOI)"
+      }
+    },
+    {
+      "id": "EONET_20062",
+      "title": "MAX ROAD (06) Wildfire, Broward, Florida",
+      "description": "10 Miles NW from MIAMI-OPA LOCKA EXECUTIVE AIRPORT, FL",
+      "categories": [
+        "Wildfires"
+      ],
+      "status": null,
+      "sources": [
+        "https://irwin.doi.gov/observer/incidents/b9437e3b-3fd9-40b6-81fc-4e75379d437e"
+      ],
+      "latest_date": "2026-05-11T10:01:00Z",
+      "latest_coords": [
+        -80.4538889,
+        25.9602778
+      ],
+      "geometry_type": "Point",
+      "total_observations": 1,
+      "damocles_node": {
+        "type": "NaturalEvent",
+        "source": "nasa_eonet",
+        "use_for": [
+          "wildfire_alert",
+          "storm_corroboration",
+          "context_layer"
+        ],
+        "cypher_hint": "(:NaturalEvent {id: 'EONET_20062', category: 'Wildfires'})-[:OCCURS_NEAR]->(:AOI)"
+      }
+    },
+    {
+      "id": "EONET_20060",
+      "title": "NIKE Wildfire, Grant, Washington",
+      "description": null,
+      "categories": [
+        "Wildfires"
+      ],
+      "status": null,
+      "sources": [
+        "https://irwin.doi.gov/observer/incidents/1191b2c6-812b-457a-b824-ce37b47157b1"
+      ],
+      "latest_date": "2026-05-11T09:33:00Z",
+      "latest_coords": [
+        -119.590383,
+        46.766217
+      ],
+      "geometry_type": "Point",
+      "total_observations": 1,
+      "damocles_node": {
+        "type": "NaturalEvent",
+        "source": "nasa_eonet",
+        "use_for": [
+          "wildfire_alert",
+          "storm_corroboration",
+          "context_layer"
+        ],
+        "cypher_hint": "(:NaturalEvent {id: 'EONET_20060', category: 'Wildfires'})-[:OCCURS_NEAR]->(:AOI)"
+      }
+    },
+    {
+      "id": "EONET_20064",
+      "title": "Rx Upshur 3999 Prescribed Fire, Upshur, Texas",
+      "description": null,
+      "categories": [
+        "Wildfires"
+      ],
+      "status": null,
+      "sources": [
+        "https://irwin.doi.gov/observer/incidents/1c9b2dc8-a084-4c5c-bb41-7bcf6dcb5ca6"
+      ],
+      "latest_date": "2026-05-11T09:09:00Z",
+      "latest_coords": [
+        -95.04077,
+        32.758815
+      ],
+      "geometry_type": "Point",
+      "total_observations": 1,
+      "damocles_node": {
+        "type": "NaturalEvent",
+        "source": "nasa_eonet",
+        "use_for": [
+          "wildfire_alert",
+          "storm_corroboration",
+          "context_layer"
+        ],
+        "cypher_hint": "(:NaturalEvent {id: 'EONET_20064', category: 'Wildfires'})-[:OCCURS_NEAR]->(:AOI)"
+      }
+    },
+    {
+      "id": "EONET_20063",
+      "title": "Rothi East RX Prescribed Fire, Big Stone, Minnesota",
+      "description": null,
+      "categories": [
+        "Wildfires"
+      ],
+      "status": null,
+      "sources": [
+        "https://irwin.doi.gov/observer/incidents/f5e7f8f0-35f3-4f65-b2df-1ca92a70ffb7"
+      ],
+      "latest_date": "2026-05-10T11:34:00Z",
+      "latest_coords": [
+        -96.27005,
+        45.32005
+      ],
+      "geometry_type": "Point",
+      "total_observations": 1,
+      "damocles_node": {
+        "type": "NaturalEvent",
+        "source": "nasa_eonet",
+        "use_for": [
+          "wildfire_alert",
+          "storm_corroboration",
+          "context_layer"
+        ],
+        "cypher_hint": "(:NaturalEvent {id: 'EONET_20063', category: 'Wildfires'})-[:OCCURS_NEAR]->(:AOI)"
+      }
+    },
+    {
+      "id": "EONET_20066",
+      "title": "Lasso Loop RX Prescribed Fire, Benzie, Michigan",
+      "description": null,
+      "categories": [
+        "Wildfires"
+      ],
+      "status": null,
+      "sources": [
+        "https://irwin.doi.gov/observer/incidents/5a2ac593-0c74-40d1-bade-d6c08afc935b"
+      ],
+      "latest_date": "2026-05-10T09:04:00Z",
+      "latest_coords": [
+        -86.091389,
+        44.729167
+      ],
+      "geometry_type": "Point",
+      "total_observations": 1,
+      "damocles_node": {
+        "type": "NaturalEvent",
+        "source": "nasa_eonet",
+        "use_for": [
+          "wildfire_alert",
+          "storm_corroboration",
+          "context_layer"
+        ],
+        "cypher_hint": "(:NaturalEvent {id: 'EONET_20066', category: 'Wildfires'})-[:OCCURS_NEAR]->(:AOI)"
+      }
+    },
+    {
+      "id": "EONET_20069",
+      "title": "BRITE Wildfire, Kern, California",
+      "description": "4 Miles SW from BUTTONWILLOW, CA",
+      "categories": [
+        "Wildfires"
+      ],
+      "status": null,
+      "sources": [
+        "https://irwin.doi.gov/observer/incidents/6b54ea91-4f1c-40d2-ab89-11f826491e96"
+      ],
+      "latest_date": "2026-05-09T17:20:00Z",
+      "latest_coords": [
+        -119.4958333,
+        35.3419444
+      ],
+      "geometry_type": "Point",
+      "total_observations": 1,
+      "damocles_node": {
+        "type": "NaturalEvent",
+        "source": "nasa_eonet",
+        "use_for": [
+          "wildfire_alert",
+          "storm_corroboration",
+          "context_layer"
+        ],
+        "cypher_hint": "(:NaturalEvent {id: 'EONET_20069', category: 'Wildfires'})-[:OCCURS_NEAR]->(:AOI)"
+      }
+    },
+    {
+      "id": "EONET_20002",
+      "title": "PINE MOUNTAIN Wildfire, Deschutes, Oregon",
+      "description": "13 Miles W from Brothers, OR",
+      "categories": [
+        "Wildfires"
+      ],
+      "status": null,
+      "sources": [
+        "https://irwin.doi.gov/observer/incidents/5985829d-31de-4a80-a836-25907b851057"
+      ],
+      "latest_date": "2026-05-07T19:20:00Z",
+      "latest_coords": [
+        -120.917759,
+        43.810294
+      ],
+      "geometry_type": "Point",
+      "total_observations": 1,
+      "damocles_node": {
+        "type": "NaturalEvent",
+        "source": "nasa_eonet",
+        "use_for": [
+          "wildfire_alert",
+          "storm_corroboration",
+          "context_layer"
+        ],
+        "cypher_hint": "(:NaturalEvent {id: 'EONET_20002', category: 'Wildfires'})-[:OCCURS_NEAR]->(:AOI)"
+      }
+    },
+    {
+      "id": "EONET_20065",
+      "title": "CANYON Wildfire, Kern, California",
+      "description": "10 Miles W from RIDGECREST, CA",
+      "categories": [
+        "Wildfires"
+      ],
+      "status": null,
+      "sources": [
+        "https://irwin.doi.gov/observer/incidents/64eabb0f-3ea8-47f3-bc7f-19750df7e579"
+      ],
+      "latest_date": "2026-05-07T14:24:00Z",
+      "latest_coords": [
+        -117.8589,
+        35.50478
+      ],
+      "geometry_type": "Point",
+      "total_observations": 1,
+      "damocles_node": {
+        "type": "NaturalEvent",
+        "source": "nasa_eonet",
+        "use_for": [
+          "wildfire_alert",
+          "storm_corroboration",
+          "context_layer"
+        ],
+        "cypher_hint": "(:NaturalEvent {id: 'EONET_20065', category: 'Wildfires'})-[:OCCURS_NEAR]->(:AOI)"
+      }
+    },
+    {
+      "id": "EONET_20009",
+      "title": "rx-Lapham Good Oak 2026 Prescribed Fire, Waukesha, Wisconsin",
+      "description": null,
+      "categories": [
+        "Wildfires"
+      ],
+      "status": null,
+      "sources": [
+        "https://irwin.doi.gov/observer/incidents/fd9b23b1-c272-4ceb-bcd6-0a8c164fc494"
+      ],
+      "latest_date": "2026-05-06T10:23:00Z",
+      "latest_coords": [
+        -88.3992015,
+        43.0403647
+      ],
+      "geometry_type": "Point",
+      "total_observations": 1,
+      "damocles_node": {
+        "type": "NaturalEvent",
+        "source": "nasa_eonet",
+        "use_for": [
+          "wildfire_alert",
+          "storm_corroboration",
+          "context_layer"
+        ],
+        "cypher_hint": "(:NaturalEvent {id: 'EONET_20009', category: 'Wildfires'})-[:OCCURS_NEAR]->(:AOI)"
+      }
+    }
+  ]
+}
