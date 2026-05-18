@@ -81,6 +81,7 @@ export const STRINGS: Record<Lang, Record<string, string>> = {
     "legend.composite":      "Composite (GREEN)",
     "legend.aoi.ai":         "AoI (AI)",
     "legend.aoi.user":       "AoI (analyst)",
+    "legend.flight":         "Aircraft (live)",
 
     "graph.legend.composite": "Composite",
     "graph.legend.vessel":    "Vessel",
@@ -286,6 +287,7 @@ export const STRINGS: Record<Lang, Record<string, string>> = {
     "legend.composite":      "Σύνθετο (ΠΡΑΣΙΝΟ)",
     "legend.aoi.ai":         "ΠΕ (AI)",
     "legend.aoi.user":       "ΠΕ (αναλυτής)",
+    "legend.flight":         "Αεροσκάφος (ζωντανά)",
 
     "graph.legend.composite": "Σύνθετο",
     "graph.legend.vessel":    "Σκάφος",
