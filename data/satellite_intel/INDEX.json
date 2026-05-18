@@ -1,0 +1,31 @@
+{
+  "generated_at": "2026-05-12T21:10:06.517782+00:00",
+  "elapsed_seconds": 29.3,
+  "existing_damocles_sources": {
+    "Sentinel Hub (CDSE)": "backend/sensors/geospatial.py \u2014 SAR vessel detection",
+    "GDELT 2.0": "backend/sensors/gdelt.py \u2014 news events",
+    "Telegram (Telethon)": "backend/sensors/telegram_sensor.py \u2014 social OSINT",
+    "AISStream.io": "backend/sensors/ais.py \u2014 maritime AIS",
+    "OpenSky Network": "backend/api/external.py \u2014 flight ADS-B",
+    "NASA EONET": "backend/api/external.py \u2014 natural events",
+    "USGS FDSN": "backend/api/external.py \u2014 earthquakes",
+    "GDACS": "backend/api/external.py \u2014 disaster alerts"
+  },
+  "new_satellite_sources": {
+    "01_sentinel2_optical": "AWS Earth Search \u2014 S2 L2A, 10m optical, 5-day revisit",
+    "02_sentinel1_sar": "MS Planetary Computer \u2014 S1 RTC+GRD SAR, all-weather",
+    "03_landsat9": "USGS LandsatLook \u2014 Landsat-9, 30m + thermal IR",
+    "04_nasa_eonet": "NASA EONET \u2014 natural events (fires/storms)",
+    "05_planetary_computer": "MS PC catalog \u2014 all intel-relevant collections for Greece",
+    "06_eos_landviewer": "EOS LandViewer guide \u2014 spectral indices + demo workflow",
+    "07_planet_labs": "Planet Labs guide \u2014 daily 3m imagery (apply for free key)",
+    "08_bellingcat_rs4osint": "Bellingcat methodology \u2014 change detection + verification"
+  },
+  "key_insight": "Damocles already integrates the best free source (Sentinel Hub CDSE). The primary gap is: (1) adding Sentinel-2 optical change detection alongside the existing S1 SAR vessel detection, and (2) adding Landsat thermal anomaly detection. Both are free, no-key, and fit the existing sensor architecture.",
+  "recommended_next_steps": [
+    "Extend GeospatialSensor to also fetch Sentinel-2 optical via existing CDSE auth",
+    "Add NDWI computation (one numpy expression) for Evros water level monitoring",
+    "Add Landsat TIRS thermal band via USGS STAC for fire/activity detection",
+    "Apply for Planet Labs Education Program (3 weeks approval, daily 3m imagery)"
+  ]
+}

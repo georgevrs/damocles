@@ -278,6 +278,8 @@ export interface VesselFeature {
     flag: string | null;
     length_m: number | null;
     ais_status: string | null;
+    confidence: number | null;
+    dark_vessel_score: number | null;
   };
 }
 export async function fetchVesselTrajectory(eventId: string, hours = 24 * 14): Promise<GeoJSON.FeatureCollection> {
@@ -287,13 +289,53 @@ export async function fetchVesselTrajectory(eventId: string, hours = 24 * 14): P
 }
 
 export async function fetchVessels(opts: {
-  bbox?: [number, number, number, number]; hours?: number; limit?: number;
+  bbox?: [number, number, number, number];
+  hours?: number;
+  limit?: number;
+  minConfidence?: number;
 } = {}): Promise<{ type: "FeatureCollection"; features: VesselFeature[] }> {
   const params: Record<string, string | number> = {};
-  if (opts.bbox)  params.bbox = opts.bbox.join(",");
-  if (opts.hours) params.hours = opts.hours;
-  if (opts.limit) params.limit = opts.limit;
+  if (opts.bbox)                        params.bbox = opts.bbox.join(",");
+  if (opts.hours)                       params.hours = opts.hours;
+  if (opts.limit)                       params.limit = opts.limit;
+  if (opts.minConfidence !== undefined) params.min_confidence = opts.minConfidence;
   return (await http.get("/api/map/vessels", { params })).data;
+}
+
+export interface VesselTrajectoryPoint {
+  lon:        number;
+  lat:        number;
+  ts:         string;
+  speed_kn:   number | null;
+  course_deg: number | null;
+}
+
+export interface VesselDetailData {
+  event_id:              string;
+  mmsi:                  string | null;
+  ts:                    string | null;
+  lat:                   number;
+  lon:                   number;
+  vessel_name:           string | null;
+  flag:                  string | null;
+  length_m:              number | null;
+  ais_status:            string | null;
+  speed_kn:              number | null;
+  course_deg:            number | null;
+  heading_deg:           number | null;
+  sar_tile_id:           string | null;
+  confidence:            number | null;
+  dark_vessel_score:     number | null;
+  ais_match_distance_km: number | null;
+  trajectory_points:     VesselTrajectoryPoint[];
+  n_trajectory_points:   number;
+}
+
+export async function fetchVesselDetail(eventId: string, trajectoryLimit = 20): Promise<VesselDetailData> {
+  return (await http.get<VesselDetailData>(
+    `/api/map/vessels/${encodeURIComponent(eventId)}`,
+    { params: { trajectory_limit: trajectoryLimit } },
+  )).data;
 }
 
 // ─── OpenSky flights (live, no cache) ────────────────────────────────

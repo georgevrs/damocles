@@ -1,0 +1,1674 @@
+{
+  "source": "Microsoft Planetary Computer",
+  "collections": [
+    "sentinel-1-rtc",
+    "sentinel-1-grd"
+  ],
+  "bbox": [
+    22.0,
+    36.0,
+    28.0,
+    41.0
+  ],
+  "date_range": "2026-04-01T00:00:00Z / 2026-05-12T23:59:59Z",
+  "fetched_at": "2026-05-12T21:09:39.386517+00:00",
+  "what_it_gives": [
+    "SAR backscatter VV + VH polarisations at 10m resolution",
+    "All-weather, day/night vessel detection",
+    "Dark vessel detection (no AIS = CFAR spike on SAR but absent from AIS)",
+    "Infrastructure change detection (clouds don't block SAR)",
+    "~6-day revisit over Greek EEZ",
+    "RTC = ready for analysis; GRD = raw for custom processing"
+  ],
+  "damocles_use_cases": [
+    "Direct input to existing CFAR vessel detector (cfar.py)",
+    "Cross-reference with AISStream to flag dark vessels",
+    "Evros river/floodplain change detection",
+    "Port activity monitoring regardless of weather"
+  ],
+  "note": "PC STAC is free for metadata. Pixel download requires PC subscription. Use Copernicus CDSE (already in geospatial.py) for free pixel access.",
+  "rtc_items": [
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260512T043225_20260512T043250_064479_081EF3_rtc",
+      "datetime": "2026-05-12T04:32:38.374876Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        20.997140018100723,
+        34.910205700895354,
+        24.06867730871336,
+        36.80948750136701
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/12/IW/DV/S1A_IW_GRDH_1SDV_20260512T043225_20260512T043250_064479_081EF3_9252/measurement/iw-vv.rtc.tiff",
+      "vh_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/12/IW/DV/S1A_IW_GRDH_1SDV_20260512T043225_20260512T043250_064479_081EF3_9252/measurement/iw-vh.rtc.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-rtc&item=S1A_IW_GRDH_1SDV_20260512T043225_20260512T043250_064479_081EF3_rtc&assets=vv&assets=vh&tile_format=png&expression=0.03+%2B+log+%2810e-4+-+log+%280.05+%2F+%280.02+%2B+2+%2A+vv%29%29%29%3B0.05+%2B+exp+%280.25+%2A+%28log+%280.01+%2B+2+%2A+vv%29+%2B+log+%280.02+%2B+5+%2A+vh%29%29%29%3B1+-+log+%280.05+%2F+%280.045+-+0.9+%2A+vv%29%29&asset_as_band=True&rescale=0%2C.8000&rescale=0%2C1.000&rescale=0%2C1.000&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-rtc",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260512T043225_20260512T043250_064479_081EF3_rtc', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260512T043200_20260512T043225_064479_081EF3_rtc",
+      "datetime": "2026-05-12T04:32:13.375151Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        21.29821457807985,
+        36.41512744588607,
+        24.429609122221105,
+        38.31186462624431
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/12/IW/DV/S1A_IW_GRDH_1SDV_20260512T043200_20260512T043225_064479_081EF3_C124/measurement/iw-vv.rtc.tiff",
+      "vh_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/12/IW/DV/S1A_IW_GRDH_1SDV_20260512T043200_20260512T043225_064479_081EF3_C124/measurement/iw-vh.rtc.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-rtc&item=S1A_IW_GRDH_1SDV_20260512T043200_20260512T043225_064479_081EF3_rtc&assets=vv&assets=vh&tile_format=png&expression=0.03+%2B+log+%2810e-4+-+log+%280.05+%2F+%280.02+%2B+2+%2A+vv%29%29%29%3B0.05+%2B+exp+%280.25+%2A+%28log+%280.01+%2B+2+%2A+vv%29+%2B+log+%280.02+%2B+5+%2A+vh%29%29%29%3B1+-+log+%280.05+%2F+%280.045+-+0.9+%2A+vv%29%29&asset_as_band=True&rescale=0%2C.8000&rescale=0%2C1.000&rescale=0%2C1.000&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-rtc",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260512T043200_20260512T043225_064479_081EF3_rtc', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260512T043135_20260512T043200_064479_081EF3_rtc",
+      "datetime": "2026-05-12T04:31:48.375419Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        21.60152306471779,
+        37.91921499562113,
+        24.798087600451375,
+        39.81526852415614
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/12/IW/DV/S1A_IW_GRDH_1SDV_20260512T043135_20260512T043200_064479_081EF3_DD18/measurement/iw-vv.rtc.tiff",
+      "vh_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/12/IW/DV/S1A_IW_GRDH_1SDV_20260512T043135_20260512T043200_064479_081EF3_DD18/measurement/iw-vh.rtc.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-rtc&item=S1A_IW_GRDH_1SDV_20260512T043135_20260512T043200_064479_081EF3_rtc&assets=vv&assets=vh&tile_format=png&expression=0.03+%2B+log+%2810e-4+-+log+%280.05+%2F+%280.02+%2B+2+%2A+vv%29%29%29%3B0.05+%2B+exp+%280.25+%2A+%28log+%280.01+%2B+2+%2A+vv%29+%2B+log+%280.02+%2B+5+%2A+vh%29%29%29%3B1+-+log+%280.05+%2F+%280.045+-+0.9+%2A+vv%29%29&asset_as_band=True&rescale=0%2C.8000&rescale=0%2C1.000&rescale=0%2C1.000&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-rtc",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260512T043135_20260512T043200_064479_081EF3_rtc', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260512T043110_20260512T043135_064479_081EF3_rtc",
+      "datetime": "2026-05-12T04:31:23.375661Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        21.898354068630546,
+        39.42250168699085,
+        25.175217319218426,
+        41.31612207629493
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/12/IW/DV/S1A_IW_GRDH_1SDV_20260512T043110_20260512T043135_064479_081EF3_A753/measurement/iw-vv.rtc.tiff",
+      "vh_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/12/IW/DV/S1A_IW_GRDH_1SDV_20260512T043110_20260512T043135_064479_081EF3_A753/measurement/iw-vh.rtc.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-rtc&item=S1A_IW_GRDH_1SDV_20260512T043110_20260512T043135_064479_081EF3_rtc&assets=vv&assets=vh&tile_format=png&expression=0.03+%2B+log+%2810e-4+-+log+%280.05+%2F+%280.02+%2B+2+%2A+vv%29%29%29%3B0.05+%2B+exp+%280.25+%2A+%28log+%280.01+%2B+2+%2A+vv%29+%2B+log+%280.02+%2B+5+%2A+vh%29%29%29%3B1+-+log+%280.05+%2F+%280.045+-+0.9+%2A+vv%29%29&asset_as_band=True&rescale=0%2C.8000&rescale=0%2C1.000&rescale=0%2C1.000&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-rtc",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260512T043110_20260512T043135_064479_081EF3_rtc', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260512T043045_20260512T043110_064479_081EF3_rtc",
+      "datetime": "2026-05-12T04:30:58.375186Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        22.21807825435984,
+        40.92480239424563,
+        25.552955094062437,
+        42.81644478967764
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/12/IW/DV/S1A_IW_GRDH_1SDV_20260512T043045_20260512T043110_064479_081EF3_7BA7/measurement/iw-vv.rtc.tiff",
+      "vh_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/12/IW/DV/S1A_IW_GRDH_1SDV_20260512T043045_20260512T043110_064479_081EF3_7BA7/measurement/iw-vh.rtc.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-rtc&item=S1A_IW_GRDH_1SDV_20260512T043045_20260512T043110_064479_081EF3_rtc&assets=vv&assets=vh&tile_format=png&expression=0.03+%2B+log+%2810e-4+-+log+%280.05+%2F+%280.02+%2B+2+%2A+vv%29%29%29%3B0.05+%2B+exp+%280.25+%2A+%28log+%280.01+%2B+2+%2A+vv%29+%2B+log+%280.02+%2B+5+%2A+vh%29%29%29%3B1+-+log+%280.05+%2F+%280.045+-+0.9+%2A+vv%29%29&asset_as_band=True&rescale=0%2C.8000&rescale=0%2C1.000&rescale=0%2C1.000&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-rtc",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260512T043045_20260512T043110_064479_081EF3_rtc', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260511T163227_20260511T163252_064472_081EAE_rtc",
+      "datetime": "2026-05-11T16:32:39.599603Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "ascending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        19.39333262337408,
+        39.29928208808019,
+        22.656535876658076,
+        41.19275307578364
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/11/IW/DV/S1A_IW_GRDH_1SDV_20260511T163227_20260511T163252_064472_081EAE_874F/measurement/iw-vv.rtc.tiff",
+      "vh_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/11/IW/DV/S1A_IW_GRDH_1SDV_20260511T163227_20260511T163252_064472_081EAE_874F/measurement/iw-vh.rtc.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-rtc&item=S1A_IW_GRDH_1SDV_20260511T163227_20260511T163252_064472_081EAE_rtc&assets=vv&assets=vh&tile_format=png&expression=0.03+%2B+log+%2810e-4+-+log+%280.05+%2F+%280.02+%2B+2+%2A+vv%29%29%29%3B0.05+%2B+exp+%280.25+%2A+%28log+%280.01+%2B+2+%2A+vv%29+%2B+log+%280.02+%2B+5+%2A+vh%29%29%29%3B1+-+log+%280.05+%2F+%280.045+-+0.9+%2A+vv%29%29&asset_as_band=True&rescale=0%2C.8000&rescale=0%2C1.000&rescale=0%2C1.000&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-rtc",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260511T163227_20260511T163252_064472_081EAE_rtc', platform: 'sentinel-1', orbit: 'ascending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260511T163202_20260511T163227_064472_081EAE_rtc",
+      "datetime": "2026-05-11T16:32:14.599692Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "ascending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        19.7701091280928,
+        37.79590074758199,
+        22.960932751000772,
+        39.69114756226616
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/11/IW/DV/S1A_IW_GRDH_1SDV_20260511T163202_20260511T163227_064472_081EAE_9DB3/measurement/iw-vv.rtc.tiff",
+      "vh_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/11/IW/DV/S1A_IW_GRDH_1SDV_20260511T163202_20260511T163227_064472_081EAE_9DB3/measurement/iw-vh.rtc.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-rtc&item=S1A_IW_GRDH_1SDV_20260511T163202_20260511T163227_064472_081EAE_rtc&assets=vv&assets=vh&tile_format=png&expression=0.03+%2B+log+%2810e-4+-+log+%280.05+%2F+%280.02+%2B+2+%2A+vv%29%29%29%3B0.05+%2B+exp+%280.25+%2A+%28log+%280.01+%2B+2+%2A+vv%29+%2B+log+%280.02+%2B+5+%2A+vh%29%29%29%3B1+-+log+%280.05+%2F+%280.045+-+0.9+%2A+vv%29%29&asset_as_band=True&rescale=0%2C.8000&rescale=0%2C1.000&rescale=0%2C1.000&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-rtc",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260511T163202_20260511T163227_064472_081EAE_rtc', platform: 'sentinel-1', orbit: 'ascending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260511T163137_20260511T163202_064472_081EAE_rtc",
+      "datetime": "2026-05-11T16:31:49.599790Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "ascending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        20.138128696159278,
+        36.29170267360356,
+        23.264763958714298,
+        38.18887810978893
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/11/IW/DV/S1A_IW_GRDH_1SDV_20260511T163137_20260511T163202_064472_081EAE_B993/measurement/iw-vv.rtc.tiff",
+      "vh_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/11/IW/DV/S1A_IW_GRDH_1SDV_20260511T163137_20260511T163202_064472_081EAE_B993/measurement/iw-vh.rtc.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-rtc&item=S1A_IW_GRDH_1SDV_20260511T163137_20260511T163202_064472_081EAE_rtc&assets=vv&assets=vh&tile_format=png&expression=0.03+%2B+log+%2810e-4+-+log+%280.05+%2F+%280.02+%2B+2+%2A+vv%29%29%29%3B0.05+%2B+exp+%280.25+%2A+%28log+%280.01+%2B+2+%2A+vv%29+%2B+log+%280.02+%2B+5+%2A+vh%29%29%29%3B1+-+log+%280.05+%2F+%280.045+-+0.9+%2A+vv%29%29&asset_as_band=True&rescale=0%2C.8000&rescale=0%2C1.000&rescale=0%2C1.000&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-rtc",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260511T163137_20260511T163202_064472_081EAE_rtc', platform: 'sentinel-1', orbit: 'ascending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260511T163112_20260511T163137_064472_081EAE_rtc",
+      "datetime": "2026-05-11T16:31:24.599889Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "ascending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        20.498412702542616,
+        34.78670639398248,
+        23.565940709271352,
+        36.68617725623335
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/11/IW/DV/S1A_IW_GRDH_1SDV_20260511T163112_20260511T163137_064472_081EAE_1956/measurement/iw-vv.rtc.tiff",
+      "vh_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/11/IW/DV/S1A_IW_GRDH_1SDV_20260511T163112_20260511T163137_064472_081EAE_1956/measurement/iw-vh.rtc.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-rtc&item=S1A_IW_GRDH_1SDV_20260511T163112_20260511T163137_064472_081EAE_rtc&assets=vv&assets=vh&tile_format=png&expression=0.03+%2B+log+%2810e-4+-+log+%280.05+%2F+%280.02+%2B+2+%2A+vv%29%29%29%3B0.05+%2B+exp+%280.25+%2A+%28log+%280.01+%2B+2+%2A+vv%29+%2B+log+%280.02+%2B+5+%2A+vh%29%29%29%3B1+-+log+%280.05+%2F+%280.045+-+0.9+%2A+vv%29%29&asset_as_band=True&rescale=0%2C.8000&rescale=0%2C1.000&rescale=0%2C1.000&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-rtc",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260511T163112_20260511T163137_064472_081EAE_rtc', platform: 'sentinel-1', orbit: 'ascending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1C_IW_GRDH_1SDV_20260511T043928_20260511T043953_007601_00F700_rtc",
+      "datetime": "2026-05-11T04:39:41.244404Z",
+      "platform": "sentinel-1c",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        19.12323940425044,
+        35.81767152817356,
+        22.224219264227514,
+        37.71617840257578
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/11/IW/DV/S1C_IW_GRDH_1SDV_20260511T043928_20260511T043953_007601_00F700_0073/measurement/iw-vv.rtc.tiff",
+      "vh_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/11/IW/DV/S1C_IW_GRDH_1SDV_20260511T043928_20260511T043953_007601_00F700_0073/measurement/iw-vh.rtc.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-rtc&item=S1C_IW_GRDH_1SDV_20260511T043928_20260511T043953_007601_00F700_rtc&assets=vv&assets=vh&tile_format=png&expression=0.03+%2B+log+%2810e-4+-+log+%280.05+%2F+%280.02+%2B+2+%2A+vv%29%29%29%3B0.05+%2B+exp+%280.25+%2A+%28log+%280.01+%2B+2+%2A+vv%29+%2B+log+%280.02+%2B+5+%2A+vh%29%29%29%3B1+-+log+%280.05+%2F+%280.045+-+0.9+%2A+vv%29%29&asset_as_band=True&rescale=0%2C.8000&rescale=0%2C1.000&rescale=0%2C1.000&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-rtc",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1C_IW_GRDH_1SDV_20260511T043928_20260511T043953_007601_00F700_rtc', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1C_IW_GRDH_1SDV_20260511T043903_20260511T043928_007601_00F700_rtc",
+      "datetime": "2026-05-11T04:39:16.243888Z",
+      "platform": "sentinel-1c",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        19.426774236182954,
+        37.32365530947774,
+        22.595237102883775,
+        39.21874471783529
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/11/IW/DV/S1C_IW_GRDH_1SDV_20260511T043903_20260511T043928_007601_00F700_4226/measurement/iw-vv.rtc.tiff",
+      "vh_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/11/IW/DV/S1C_IW_GRDH_1SDV_20260511T043903_20260511T043928_007601_00F700_4226/measurement/iw-vh.rtc.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-rtc&item=S1C_IW_GRDH_1SDV_20260511T043903_20260511T043928_007601_00F700_rtc&assets=vv&assets=vh&tile_format=png&expression=0.03+%2B+log+%2810e-4+-+log+%280.05+%2F+%280.02+%2B+2+%2A+vv%29%29%29%3B0.05+%2B+exp+%280.25+%2A+%28log+%280.01+%2B+2+%2A+vv%29+%2B+log+%280.02+%2B+5+%2A+vh%29%29%29%3B1+-+log+%280.05+%2F+%280.045+-+0.9+%2A+vv%29%29&asset_as_band=True&rescale=0%2C.8000&rescale=0%2C1.000&rescale=0%2C1.000&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-rtc",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1C_IW_GRDH_1SDV_20260511T043903_20260511T043928_007601_00F700_rtc', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1C_IW_GRDH_1SDV_20260511T043838_20260511T043903_007601_00F700_rtc",
+      "datetime": "2026-05-11T04:38:51.244016Z",
+      "platform": "sentinel-1c",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        19.730852143217106,
+        38.826485127616124,
+        22.969306883617012,
+        40.72002454963689
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/11/IW/DV/S1C_IW_GRDH_1SDV_20260511T043838_20260511T043903_007601_00F700_1EA1/measurement/iw-vv.rtc.tiff",
+      "vh_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/11/IW/DV/S1C_IW_GRDH_1SDV_20260511T043838_20260511T043903_007601_00F700_1EA1/measurement/iw-vh.rtc.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-rtc&item=S1C_IW_GRDH_1SDV_20260511T043838_20260511T043903_007601_00F700_rtc&assets=vv&assets=vh&tile_format=png&expression=0.03+%2B+log+%2810e-4+-+log+%280.05+%2F+%280.02+%2B+2+%2A+vv%29%29%29%3B0.05+%2B+exp+%280.25+%2A+%28log+%280.01+%2B+2+%2A+vv%29+%2B+log+%280.02+%2B+5+%2A+vh%29%29%29%3B1+-+log+%280.05+%2F+%280.045+-+0.9+%2A+vv%29%29&asset_as_band=True&rescale=0%2C.8000&rescale=0%2C1.000&rescale=0%2C1.000&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-rtc",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1C_IW_GRDH_1SDV_20260511T043838_20260511T043903_007601_00F700_rtc', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1C_IW_GRDH_1SDV_20260511T043813_20260511T043838_007601_00F700_rtc",
+      "datetime": "2026-05-11T04:38:26.244237Z",
+      "platform": "sentinel-1c",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        20.041269737004413,
+        40.32914424896348,
+        23.307161583373976,
+        42.22103894524524
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/11/IW/DV/S1C_IW_GRDH_1SDV_20260511T043813_20260511T043838_007601_00F700_3542/measurement/iw-vv.rtc.tiff",
+      "vh_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/11/IW/DV/S1C_IW_GRDH_1SDV_20260511T043813_20260511T043838_007601_00F700_3542/measurement/iw-vh.rtc.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-rtc&item=S1C_IW_GRDH_1SDV_20260511T043813_20260511T043838_007601_00F700_rtc&assets=vv&assets=vh&tile_format=png&expression=0.03+%2B+log+%2810e-4+-+log+%280.05+%2F+%280.02+%2B+2+%2A+vv%29%29%29%3B0.05+%2B+exp+%280.25+%2A+%28log+%280.01+%2B+2+%2A+vv%29+%2B+log+%280.02+%2B+5+%2A+vh%29%29%29%3B1+-+log+%280.05+%2F+%280.045+-+0.9+%2A+vv%29%29&asset_as_band=True&rescale=0%2C.8000&rescale=0%2C1.000&rescale=0%2C1.000&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-rtc",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1C_IW_GRDH_1SDV_20260511T043813_20260511T043838_007601_00F700_rtc', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1C_IW_GRDH_1SDV_20260509T155904_20260509T155929_007579_00F639_rtc",
+      "datetime": "2026-05-09T15:59:16.707313Z",
+      "platform": "sentinel-1c",
+      "orbit_state": "ascending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        27.188687390021574,
+        40.97309758993072,
+        30.530771572256878,
+        42.86398628545722
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/9/IW/DV/S1C_IW_GRDH_1SDV_20260509T155904_20260509T155929_007579_00F639_0514/measurement/iw-vv.rtc.tiff",
+      "vh_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/9/IW/DV/S1C_IW_GRDH_1SDV_20260509T155904_20260509T155929_007579_00F639_0514/measurement/iw-vh.rtc.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-rtc&item=S1C_IW_GRDH_1SDV_20260509T155904_20260509T155929_007579_00F639_rtc&assets=vv&assets=vh&tile_format=png&expression=0.03+%2B+log+%2810e-4+-+log+%280.05+%2F+%280.02+%2B+2+%2A+vv%29%29%29%3B0.05+%2B+exp+%280.25+%2A+%28log+%280.01+%2B+2+%2A+vv%29+%2B+log+%280.02+%2B+5+%2A+vh%29%29%29%3B1+-+log+%280.05+%2F+%280.045+-+0.9+%2A+vv%29%29&asset_as_band=True&rescale=0%2C.8000&rescale=0%2C1.000&rescale=0%2C1.000&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-rtc",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1C_IW_GRDH_1SDV_20260509T155904_20260509T155929_007579_00F639_rtc', platform: 'sentinel-1', orbit: 'ascending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1C_IW_GRDH_1SDV_20260509T155839_20260509T155904_007579_00F639_rtc",
+      "datetime": "2026-05-09T15:58:51.707725Z",
+      "platform": "sentinel-1c",
+      "orbit_state": "ascending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        27.575378122058506,
+        39.4715894030618,
+        30.85312068346639,
+        41.36343972865296
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/9/IW/DV/S1C_IW_GRDH_1SDV_20260509T155839_20260509T155904_007579_00F639_E1A0/measurement/iw-vv.rtc.tiff",
+      "vh_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/9/IW/DV/S1C_IW_GRDH_1SDV_20260509T155839_20260509T155904_007579_00F639_E1A0/measurement/iw-vh.rtc.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-rtc&item=S1C_IW_GRDH_1SDV_20260509T155839_20260509T155904_007579_00F639_rtc&assets=vv&assets=vh&tile_format=png&expression=0.03+%2B+log+%2810e-4+-+log+%280.05+%2F+%280.02+%2B+2+%2A+vv%29%29%29%3B0.05+%2B+exp+%280.25+%2A+%28log+%280.01+%2B+2+%2A+vv%29+%2B+log+%280.02+%2B+5+%2A+vh%29%29%29%3B1+-+log+%280.05+%2F+%280.045+-+0.9+%2A+vv%29%29&asset_as_band=True&rescale=0%2C.8000&rescale=0%2C1.000&rescale=0%2C1.000&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-rtc",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1C_IW_GRDH_1SDV_20260509T155839_20260509T155904_007579_00F639_rtc', platform: 'sentinel-1', orbit: 'ascending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1C_IW_GRDH_1SDV_20260509T155814_20260509T155839_007579_00F639_rtc",
+      "datetime": "2026-05-09T15:58:26.708138Z",
+      "platform": "sentinel-1c",
+      "orbit_state": "ascending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        27.957807402445155,
+        37.968811016755595,
+        31.167252436000428,
+        39.86336717684224
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/9/IW/DV/S1C_IW_GRDH_1SDV_20260509T155814_20260509T155839_007579_00F639_4866/measurement/iw-vv.rtc.tiff",
+      "vh_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/9/IW/DV/S1C_IW_GRDH_1SDV_20260509T155814_20260509T155839_007579_00F639_4866/measurement/iw-vh.rtc.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-rtc&item=S1C_IW_GRDH_1SDV_20260509T155814_20260509T155839_007579_00F639_rtc&assets=vv&assets=vh&tile_format=png&expression=0.03+%2B+log+%2810e-4+-+log+%280.05+%2F+%280.02+%2B+2+%2A+vv%29%29%29%3B0.05+%2B+exp+%280.25+%2A+%28log+%280.01+%2B+2+%2A+vv%29+%2B+log+%280.02+%2B+5+%2A+vh%29%29%29%3B1+-+log+%280.05+%2F+%280.045+-+0.9+%2A+vv%29%29&asset_as_band=True&rescale=0%2C.8000&rescale=0%2C1.000&rescale=0%2C1.000&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-rtc",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1C_IW_GRDH_1SDV_20260509T155814_20260509T155839_007579_00F639_rtc', platform: 'sentinel-1', orbit: 'ascending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260509T040746_20260509T040811_064435_081D6D_rtc",
+      "datetime": "2026-05-09T04:07:59.074452Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        27.149409907882568,
+        34.80710796423667,
+        30.216838236205113,
+        36.70678920973637
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/9/IW/DV/S1A_IW_GRDH_1SDV_20260509T040746_20260509T040811_064435_081D6D_EF71/measurement/iw-vv.rtc.tiff",
+      "vh_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/9/IW/DV/S1A_IW_GRDH_1SDV_20260509T040746_20260509T040811_064435_081D6D_EF71/measurement/iw-vh.rtc.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-rtc&item=S1A_IW_GRDH_1SDV_20260509T040746_20260509T040811_064435_081D6D_rtc&assets=vv&assets=vh&tile_format=png&expression=0.03+%2B+log+%2810e-4+-+log+%280.05+%2F+%280.02+%2B+2+%2A+vv%29%29%29%3B0.05+%2B+exp+%280.25+%2A+%28log+%280.01+%2B+2+%2A+vv%29+%2B+log+%280.02+%2B+5+%2A+vh%29%29%29%3B1+-+log+%280.05+%2F+%280.045+-+0.9+%2A+vv%29%29&asset_as_band=True&rescale=0%2C.8000&rescale=0%2C1.000&rescale=0%2C1.000&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-rtc",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260509T040746_20260509T040811_064435_081D6D_rtc', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260509T040721_20260509T040746_064435_081D6D_rtc",
+      "datetime": "2026-05-09T04:07:34.074823Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        27.446208714526776,
+        36.31200580509908,
+        30.558289315479946,
+        38.20953971368073
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/9/IW/DV/S1A_IW_GRDH_1SDV_20260509T040721_20260509T040746_064435_081D6D_3F00/measurement/iw-vv.rtc.tiff",
+      "vh_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/9/IW/DV/S1A_IW_GRDH_1SDV_20260509T040721_20260509T040746_064435_081D6D_3F00/measurement/iw-vh.rtc.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-rtc&item=S1A_IW_GRDH_1SDV_20260509T040721_20260509T040746_064435_081D6D_rtc&assets=vv&assets=vh&tile_format=png&expression=0.03+%2B+log+%2810e-4+-+log+%280.05+%2F+%280.02+%2B+2+%2A+vv%29%29%29%3B0.05+%2B+exp+%280.25+%2A+%28log+%280.01+%2B+2+%2A+vv%29+%2B+log+%280.02+%2B+5+%2A+vh%29%29%29%3B1+-+log+%280.05+%2F+%280.045+-+0.9+%2A+vv%29%29&asset_as_band=True&rescale=0%2C.8000&rescale=0%2C1.000&rescale=0%2C1.000&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-rtc",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260509T040721_20260509T040746_064435_081D6D_rtc', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260509T040656_20260509T040721_064435_081D6D_rtc",
+      "datetime": "2026-05-09T04:07:09.075219Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        27.750225301683926,
+        37.818999652971776,
+        30.927505204627344,
+        39.711196300284215
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/9/IW/DV/S1A_IW_GRDH_1SDV_20260509T040656_20260509T040721_064435_081D6D_2772/measurement/iw-vv.rtc.tiff",
+      "vh_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/9/IW/DV/S1A_IW_GRDH_1SDV_20260509T040656_20260509T040721_064435_081D6D_2772/measurement/iw-vh.rtc.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-rtc&item=S1A_IW_GRDH_1SDV_20260509T040656_20260509T040721_064435_081D6D_rtc&assets=vv&assets=vh&tile_format=png&expression=0.03+%2B+log+%2810e-4+-+log+%280.05+%2F+%280.02+%2B+2+%2A+vv%29%29%29%3B0.05+%2B+exp+%280.25+%2A+%28log+%280.01+%2B+2+%2A+vv%29+%2B+log+%280.02+%2B+5+%2A+vh%29%29%29%3B1+-+log+%280.05+%2F+%280.045+-+0.9+%2A+vv%29%29&asset_as_band=True&rescale=0%2C.8000&rescale=0%2C1.000&rescale=0%2C1.000&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-rtc",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260509T040656_20260509T040721_064435_081D6D_rtc', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260508T160754_20260508T160819_064428_081D31_rtc",
+      "datetime": "2026-05-08T16:08:06.708408Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "ascending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        25.457038443498586,
+        39.78876195013771,
+        28.72215608389951,
+        41.681341023986576
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/8/IW/DV/S1A_IW_GRDH_1SDV_20260508T160754_20260508T160819_064428_081D31_544E/measurement/iw-vv.rtc.tiff",
+      "vh_url": "https://sentinel1euwestrtc.blob.core.windows.net/sentinel1-grd-rtc/GRD/2026/5/8/IW/DV/S1A_IW_GRDH_1SDV_20260508T160754_20260508T160819_064428_081D31_544E/measurement/iw-vh.rtc.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-rtc&item=S1A_IW_GRDH_1SDV_20260508T160754_20260508T160819_064428_081D31_rtc&assets=vv&assets=vh&tile_format=png&expression=0.03+%2B+log+%2810e-4+-+log+%280.05+%2F+%280.02+%2B+2+%2A+vv%29%29%29%3B0.05+%2B+exp+%280.25+%2A+%28log+%280.01+%2B+2+%2A+vv%29+%2B+log+%280.02+%2B+5+%2A+vh%29%29%29%3B1+-+log+%280.05+%2F+%280.045+-+0.9+%2A+vv%29%29&asset_as_band=True&rescale=0%2C.8000&rescale=0%2C1.000&rescale=0%2C1.000&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-rtc",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260508T160754_20260508T160819_064428_081D31_rtc', platform: 'sentinel-1', orbit: 'ascending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    }
+  ],
+  "grd_items": [
+    {
+      "id": "S1C_IW_GRDH_1SDV_20260512T162329_20260512T162354_007623_00F7C1",
+      "datetime": "2026-05-12T16:23:41.924702Z",
+      "platform": "sentinel-1c",
+      "orbit_state": "ascending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        21.23030700000001,
+        40.003296,
+        24.644228,
+        41.908566
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "thumbnail",
+        "safe-manifest",
+        "schema-noise-vh",
+        "schema-noise-vv",
+        "schema-product-vh",
+        "schema-product-vv",
+        "schema-calibration-vh",
+        "schema-calibration-vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1C_IW_GRDH_1SDV_20260512T162329_20260512T162354_007623_00F7C1_6177/measurement/iw-vv.tiff",
+      "vh_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1C_IW_GRDH_1SDV_20260512T162329_20260512T162354_007623_00F7C1_6177/measurement/iw-vh.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-grd&item=S1C_IW_GRDH_1SDV_20260512T162329_20260512T162354_007623_00F7C1&assets=vv&assets=vh&expression=vv%3Bvh%3Bvv%2Fvh&rescale=0%2C600&rescale=0%2C270&rescale=0%2C9&asset_as_band=True&tile_format=png&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-grd",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1C_IW_GRDH_1SDV_20260512T162329_20260512T162354_007623_00F7C1', platform: 'sentinel-1', orbit: 'ascending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1C_IW_GRDH_1SDV_20260512T162304_20260512T162329_007623_00F7C1",
+      "datetime": "2026-05-12T16:23:16.924735Z",
+      "platform": "sentinel-1c",
+      "orbit_state": "ascending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        21.619568000000015,
+        38.500671,
+        24.95344,
+        40.408405
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "thumbnail",
+        "safe-manifest",
+        "schema-noise-vh",
+        "schema-noise-vv",
+        "schema-product-vh",
+        "schema-product-vv",
+        "schema-calibration-vh",
+        "schema-calibration-vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1C_IW_GRDH_1SDV_20260512T162304_20260512T162329_007623_00F7C1_6BDE/measurement/iw-vv.tiff",
+      "vh_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1C_IW_GRDH_1SDV_20260512T162304_20260512T162329_007623_00F7C1_6BDE/measurement/iw-vh.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-grd&item=S1C_IW_GRDH_1SDV_20260512T162304_20260512T162329_007623_00F7C1&assets=vv&assets=vh&expression=vv%3Bvh%3Bvv%2Fvh&rescale=0%2C600&rescale=0%2C270&rescale=0%2C9&asset_as_band=True&tile_format=png&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-grd",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1C_IW_GRDH_1SDV_20260512T162304_20260512T162329_007623_00F7C1', platform: 'sentinel-1', orbit: 'ascending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1C_IW_GRDH_1SDV_20260512T162239_20260512T162304_007623_00F7C1",
+      "datetime": "2026-05-12T16:22:51.924780Z",
+      "platform": "sentinel-1c",
+      "orbit_state": "ascending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        21.994335000000007,
+        36.996563,
+        25.254925000000014,
+        38.907043
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "thumbnail",
+        "safe-manifest",
+        "schema-noise-vh",
+        "schema-noise-vv",
+        "schema-product-vh",
+        "schema-product-vv",
+        "schema-calibration-vh",
+        "schema-calibration-vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1C_IW_GRDH_1SDV_20260512T162239_20260512T162304_007623_00F7C1_14FD/measurement/iw-vv.tiff",
+      "vh_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1C_IW_GRDH_1SDV_20260512T162239_20260512T162304_007623_00F7C1_14FD/measurement/iw-vh.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-grd&item=S1C_IW_GRDH_1SDV_20260512T162239_20260512T162304_007623_00F7C1&assets=vv&assets=vh&expression=vv%3Bvh%3Bvv%2Fvh&rescale=0%2C600&rescale=0%2C270&rescale=0%2C9&asset_as_band=True&tile_format=png&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-grd",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1C_IW_GRDH_1SDV_20260512T162239_20260512T162304_007623_00F7C1', platform: 'sentinel-1', orbit: 'ascending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1C_IW_GRDH_1SDV_20260512T162214_20260512T162239_007623_00F7C1",
+      "datetime": "2026-05-12T16:22:26.924829Z",
+      "platform": "sentinel-1c",
+      "orbit_state": "ascending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        22.356796000000003,
+        35.491825,
+        25.554467999999986,
+        37.40453
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "thumbnail",
+        "safe-manifest",
+        "schema-noise-vh",
+        "schema-noise-vv",
+        "schema-product-vh",
+        "schema-product-vv",
+        "schema-calibration-vh",
+        "schema-calibration-vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1C_IW_GRDH_1SDV_20260512T162214_20260512T162239_007623_00F7C1_2330/measurement/iw-vv.tiff",
+      "vh_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1C_IW_GRDH_1SDV_20260512T162214_20260512T162239_007623_00F7C1_2330/measurement/iw-vh.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-grd&item=S1C_IW_GRDH_1SDV_20260512T162214_20260512T162239_007623_00F7C1&assets=vv&assets=vh&expression=vv%3Bvh%3Bvv%2Fvh&rescale=0%2C600&rescale=0%2C270&rescale=0%2C9&asset_as_band=True&tile_format=png&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-grd",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1C_IW_GRDH_1SDV_20260512T162214_20260512T162239_007623_00F7C1', platform: 'sentinel-1', orbit: 'ascending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1D_IW_GRDH_1SDV_20260512T043950_20260512T044015_002746_004A24",
+      "datetime": "2026-05-12T04:40:02.573229Z",
+      "platform": "sentinel-1d",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        18.89563799999999,
+        35.128304,
+        22.08744999999999,
+        37.041084
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "thumbnail",
+        "safe-manifest",
+        "schema-noise-vh",
+        "schema-noise-vv",
+        "schema-product-vh",
+        "schema-product-vv",
+        "schema-calibration-vh",
+        "schema-calibration-vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1D_IW_GRDH_1SDV_20260512T043950_20260512T044015_002746_004A24_CCE3/measurement/iw-vv.tiff",
+      "vh_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1D_IW_GRDH_1SDV_20260512T043950_20260512T044015_002746_004A24_CCE3/measurement/iw-vh.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-grd&item=S1D_IW_GRDH_1SDV_20260512T043950_20260512T044015_002746_004A24&assets=vv&assets=vh&expression=vv%3Bvh%3Bvv%2Fvh&rescale=0%2C600&rescale=0%2C270&rescale=0%2C9&asset_as_band=True&tile_format=png&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-grd",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1D_IW_GRDH_1SDV_20260512T043950_20260512T044015_002746_004A24', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1D_IW_GRDH_1SDV_20260512T043925_20260512T043950_002746_004A24",
+      "datetime": "2026-05-12T04:39:37.573629Z",
+      "platform": "sentinel-1d",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        19.19921500000001,
+        36.632408,
+        22.449871,
+        38.543434
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "thumbnail",
+        "safe-manifest",
+        "schema-noise-vh",
+        "schema-noise-vv",
+        "schema-product-vh",
+        "schema-product-vv",
+        "schema-calibration-vh",
+        "schema-calibration-vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1D_IW_GRDH_1SDV_20260512T043925_20260512T043950_002746_004A24_F198/measurement/iw-vv.tiff",
+      "vh_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1D_IW_GRDH_1SDV_20260512T043925_20260512T043950_002746_004A24_F198/measurement/iw-vh.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-grd&item=S1D_IW_GRDH_1SDV_20260512T043925_20260512T043950_002746_004A24&assets=vv&assets=vh&expression=vv%3Bvh%3Bvv%2Fvh&rescale=0%2C600&rescale=0%2C270&rescale=0%2C9&asset_as_band=True&tile_format=png&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-grd",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1D_IW_GRDH_1SDV_20260512T043925_20260512T043950_002746_004A24', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1D_IW_GRDH_1SDV_20260512T043900_20260512T043925_002746_004A24",
+      "datetime": "2026-05-12T04:39:12.573302Z",
+      "platform": "sentinel-1d",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        19.50136900000001,
+        38.13636,
+        22.821405,
+        40.04504
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "thumbnail",
+        "safe-manifest",
+        "schema-noise-vh",
+        "schema-noise-vv",
+        "schema-product-vh",
+        "schema-product-vv",
+        "schema-calibration-vh",
+        "schema-calibration-vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1D_IW_GRDH_1SDV_20260512T043900_20260512T043925_002746_004A24_2481/measurement/iw-vv.tiff",
+      "vh_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1D_IW_GRDH_1SDV_20260512T043900_20260512T043925_002746_004A24_2481/measurement/iw-vh.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-grd&item=S1D_IW_GRDH_1SDV_20260512T043900_20260512T043925_002746_004A24&assets=vv&assets=vh&expression=vv%3Bvh%3Bvv%2Fvh&rescale=0%2C600&rescale=0%2C270&rescale=0%2C9&asset_as_band=True&tile_format=png&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-grd",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1D_IW_GRDH_1SDV_20260512T043900_20260512T043925_002746_004A24', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1D_IW_GRDH_1SDV_20260512T043835_20260512T043900_002746_004A24",
+      "datetime": "2026-05-12T04:38:47.572974Z",
+      "platform": "sentinel-1d",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        19.808783000000005,
+        39.639374,
+        23.204014,
+        41.545803
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "thumbnail",
+        "safe-manifest",
+        "schema-noise-vh",
+        "schema-noise-vv",
+        "schema-product-vh",
+        "schema-product-vv",
+        "schema-calibration-vh",
+        "schema-calibration-vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1D_IW_GRDH_1SDV_20260512T043835_20260512T043900_002746_004A24_761E/measurement/iw-vv.tiff",
+      "vh_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1D_IW_GRDH_1SDV_20260512T043835_20260512T043900_002746_004A24_761E/measurement/iw-vh.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-grd&item=S1D_IW_GRDH_1SDV_20260512T043835_20260512T043900_002746_004A24&assets=vv&assets=vh&expression=vv%3Bvh%3Bvv%2Fvh&rescale=0%2C600&rescale=0%2C270&rescale=0%2C9&asset_as_band=True&tile_format=png&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-grd",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1D_IW_GRDH_1SDV_20260512T043835_20260512T043900_002746_004A24', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260512T043225_20260512T043250_064479_081EF3",
+      "datetime": "2026-05-12T04:32:38.374876Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        20.871762999999987,
+        34.908249,
+        24.085890000000006,
+        36.825367
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "thumbnail",
+        "safe-manifest",
+        "schema-noise-vh",
+        "schema-noise-vv",
+        "schema-product-vh",
+        "schema-product-vv",
+        "schema-calibration-vh",
+        "schema-calibration-vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1A_IW_GRDH_1SDV_20260512T043225_20260512T043250_064479_081EF3_9252/measurement/iw-vv.tiff",
+      "vh_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1A_IW_GRDH_1SDV_20260512T043225_20260512T043250_064479_081EF3_9252/measurement/iw-vh.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-grd&item=S1A_IW_GRDH_1SDV_20260512T043225_20260512T043250_064479_081EF3&assets=vv&assets=vh&expression=vv%3Bvh%3Bvv%2Fvh&rescale=0%2C600&rescale=0%2C270&rescale=0%2C9&asset_as_band=True&tile_format=png&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-grd",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260512T043225_20260512T043250_064479_081EF3', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260512T043200_20260512T043225_064479_081EF3",
+      "datetime": "2026-05-12T04:32:13.375151Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        21.17379600000001,
+        36.41254,
+        24.449984,
+        38.327377
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "thumbnail",
+        "safe-manifest",
+        "schema-noise-vh",
+        "schema-noise-vv",
+        "schema-product-vh",
+        "schema-product-vv",
+        "schema-calibration-vh",
+        "schema-calibration-vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1A_IW_GRDH_1SDV_20260512T043200_20260512T043225_064479_081EF3_C124/measurement/iw-vv.tiff",
+      "vh_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1A_IW_GRDH_1SDV_20260512T043200_20260512T043225_064479_081EF3_C124/measurement/iw-vh.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-grd&item=S1A_IW_GRDH_1SDV_20260512T043200_20260512T043225_064479_081EF3&assets=vv&assets=vh&expression=vv%3Bvh%3Bvv%2Fvh&rescale=0%2C600&rescale=0%2C270&rescale=0%2C9&asset_as_band=True&tile_format=png&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-grd",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260512T043200_20260512T043225_064479_081EF3', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260512T043135_20260512T043200_064479_081EF3",
+      "datetime": "2026-05-12T04:31:48.375419Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        21.477619000000004,
+        37.916183,
+        24.82519099999999,
+        39.828445
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "thumbnail",
+        "safe-manifest",
+        "schema-noise-vh",
+        "schema-noise-vv",
+        "schema-product-vh",
+        "schema-product-vv",
+        "schema-calibration-vh",
+        "schema-calibration-vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1A_IW_GRDH_1SDV_20260512T043135_20260512T043200_064479_081EF3_DD18/measurement/iw-vv.tiff",
+      "vh_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1A_IW_GRDH_1SDV_20260512T043135_20260512T043200_064479_081EF3_DD18/measurement/iw-vh.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-grd&item=S1A_IW_GRDH_1SDV_20260512T043135_20260512T043200_064479_081EF3&assets=vv&assets=vh&expression=vv%3Bvh%3Bvv%2Fvh&rescale=0%2C600&rescale=0%2C270&rescale=0%2C9&asset_as_band=True&tile_format=png&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-grd",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260512T043135_20260512T043200_064479_081EF3', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260512T043110_20260512T043135_064479_081EF3",
+      "datetime": "2026-05-12T04:31:23.375661Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        21.788229,
+        39.418514,
+        25.204139999999995,
+        41.329491
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "thumbnail",
+        "safe-manifest",
+        "schema-noise-vh",
+        "schema-noise-vv",
+        "schema-product-vh",
+        "schema-product-vv",
+        "schema-calibration-vh",
+        "schema-calibration-vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1A_IW_GRDH_1SDV_20260512T043110_20260512T043135_064479_081EF3_A753/measurement/iw-vv.tiff",
+      "vh_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1A_IW_GRDH_1SDV_20260512T043110_20260512T043135_064479_081EF3_A753/measurement/iw-vh.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-grd&item=S1A_IW_GRDH_1SDV_20260512T043110_20260512T043135_064479_081EF3&assets=vv&assets=vh&expression=vv%3Bvh%3Bvv%2Fvh&rescale=0%2C600&rescale=0%2C270&rescale=0%2C9&asset_as_band=True&tile_format=png&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-grd",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260512T043110_20260512T043135_064479_081EF3', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260512T043045_20260512T043110_064479_081EF3",
+      "datetime": "2026-05-12T04:30:58.375186Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        22.097613999999993,
+        40.920712,
+        25.58732599999999,
+        42.830612
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "thumbnail",
+        "safe-manifest",
+        "schema-noise-vh",
+        "schema-noise-vv",
+        "schema-product-vh",
+        "schema-product-vv",
+        "schema-calibration-vh",
+        "schema-calibration-vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1A_IW_GRDH_1SDV_20260512T043045_20260512T043110_064479_081EF3_7BA7/measurement/iw-vv.tiff",
+      "vh_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/12/IW/DV/S1A_IW_GRDH_1SDV_20260512T043045_20260512T043110_064479_081EF3_7BA7/measurement/iw-vh.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-grd&item=S1A_IW_GRDH_1SDV_20260512T043045_20260512T043110_064479_081EF3&assets=vv&assets=vh&expression=vv%3Bvh%3Bvv%2Fvh&rescale=0%2C600&rescale=0%2C270&rescale=0%2C9&asset_as_band=True&tile_format=png&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-grd",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260512T043045_20260512T043110_064479_081EF3', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260511T163227_20260511T163252_064472_081EAE",
+      "datetime": "2026-05-11T16:32:39.599603Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "ascending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        19.372658,
+        39.296463,
+        22.78002699999999,
+        41.206963
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "thumbnail",
+        "safe-manifest",
+        "schema-noise-vh",
+        "schema-noise-vv",
+        "schema-product-vh",
+        "schema-product-vv",
+        "schema-calibration-vh",
+        "schema-calibration-vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/11/IW/DV/S1A_IW_GRDH_1SDV_20260511T163227_20260511T163252_064472_081EAE_874F/measurement/iw-vv.tiff",
+      "vh_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/11/IW/DV/S1A_IW_GRDH_1SDV_20260511T163227_20260511T163252_064472_081EAE_874F/measurement/iw-vh.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-grd&item=S1A_IW_GRDH_1SDV_20260511T163227_20260511T163252_064472_081EAE&assets=vv&assets=vh&expression=vv%3Bvh%3Bvv%2Fvh&rescale=0%2C600&rescale=0%2C270&rescale=0%2C9&asset_as_band=True&tile_format=png&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-grd",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260511T163227_20260511T163252_064472_081EAE', platform: 'sentinel-1', orbit: 'ascending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260511T163202_20260511T163227_064472_081EAE",
+      "datetime": "2026-05-11T16:32:14.599692Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "ascending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        19.751914999999997,
+        37.793076,
+        23.08386999999999,
+        39.705948
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "thumbnail",
+        "safe-manifest",
+        "schema-noise-vh",
+        "schema-noise-vv",
+        "schema-product-vh",
+        "schema-product-vv",
+        "schema-calibration-vh",
+        "schema-calibration-vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/11/IW/DV/S1A_IW_GRDH_1SDV_20260511T163202_20260511T163227_064472_081EAE_9DB3/measurement/iw-vv.tiff",
+      "vh_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/11/IW/DV/S1A_IW_GRDH_1SDV_20260511T163202_20260511T163227_064472_081EAE_9DB3/measurement/iw-vh.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-grd&item=S1A_IW_GRDH_1SDV_20260511T163202_20260511T163227_064472_081EAE&assets=vv&assets=vh&expression=vv%3Bvh%3Bvv%2Fvh&rescale=0%2C600&rescale=0%2C270&rescale=0%2C9&asset_as_band=True&tile_format=png&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-grd",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260511T163202_20260511T163227_064472_081EAE', platform: 'sentinel-1', orbit: 'ascending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260511T163137_20260511T163202_064472_081EAE",
+      "datetime": "2026-05-11T16:31:49.599790Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "ascending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        20.12012899999999,
+        36.28949,
+        23.388892999999996,
+        38.204041
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "thumbnail",
+        "safe-manifest",
+        "schema-noise-vh",
+        "schema-noise-vv",
+        "schema-product-vh",
+        "schema-product-vv",
+        "schema-calibration-vh",
+        "schema-calibration-vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/11/IW/DV/S1A_IW_GRDH_1SDV_20260511T163137_20260511T163202_064472_081EAE_B993/measurement/iw-vv.tiff",
+      "vh_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/11/IW/DV/S1A_IW_GRDH_1SDV_20260511T163137_20260511T163202_064472_081EAE_B993/measurement/iw-vh.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-grd&item=S1A_IW_GRDH_1SDV_20260511T163137_20260511T163202_064472_081EAE&assets=vv&assets=vh&expression=vv%3Bvh%3Bvv%2Fvh&rescale=0%2C600&rescale=0%2C270&rescale=0%2C9&asset_as_band=True&tile_format=png&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-grd",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260511T163137_20260511T163202_064472_081EAE', platform: 'sentinel-1', orbit: 'ascending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1A_IW_GRDH_1SDV_20260511T163112_20260511T163137_064472_081EAE",
+      "datetime": "2026-05-11T16:31:24.599889Z",
+      "platform": "sentinel-1a",
+      "orbit_state": "ascending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        20.484771999999992,
+        34.785133,
+        23.690991999999994,
+        36.702061
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "thumbnail",
+        "safe-manifest",
+        "schema-noise-vh",
+        "schema-noise-vv",
+        "schema-product-vh",
+        "schema-product-vv",
+        "schema-calibration-vh",
+        "schema-calibration-vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/11/IW/DV/S1A_IW_GRDH_1SDV_20260511T163112_20260511T163137_064472_081EAE_1956/measurement/iw-vv.tiff",
+      "vh_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/11/IW/DV/S1A_IW_GRDH_1SDV_20260511T163112_20260511T163137_064472_081EAE_1956/measurement/iw-vh.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-grd&item=S1A_IW_GRDH_1SDV_20260511T163112_20260511T163137_064472_081EAE&assets=vv&assets=vh&expression=vv%3Bvh%3Bvv%2Fvh&rescale=0%2C600&rescale=0%2C270&rescale=0%2C9&asset_as_band=True&tile_format=png&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-grd",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1A_IW_GRDH_1SDV_20260511T163112_20260511T163137_064472_081EAE', platform: 'sentinel-1', orbit: 'ascending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1C_IW_GRDH_1SDV_20260511T043928_20260511T043953_007601_00F700",
+      "datetime": "2026-05-11T04:39:41.244404Z",
+      "platform": "sentinel-1c",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        19.05383900000001,
+        35.815258,
+        22.249843999999996,
+        37.725193
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "thumbnail",
+        "safe-manifest",
+        "schema-noise-vh",
+        "schema-noise-vv",
+        "schema-product-vh",
+        "schema-product-vv",
+        "schema-calibration-vh",
+        "schema-calibration-vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/11/IW/DV/S1C_IW_GRDH_1SDV_20260511T043928_20260511T043953_007601_00F700_0073/measurement/iw-vv.tiff",
+      "vh_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/11/IW/DV/S1C_IW_GRDH_1SDV_20260511T043928_20260511T043953_007601_00F700_0073/measurement/iw-vh.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-grd&item=S1C_IW_GRDH_1SDV_20260511T043928_20260511T043953_007601_00F700&assets=vv&assets=vh&expression=vv%3Bvh%3Bvv%2Fvh&rescale=0%2C600&rescale=0%2C270&rescale=0%2C9&asset_as_band=True&tile_format=png&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-grd",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1C_IW_GRDH_1SDV_20260511T043928_20260511T043953_007601_00F700', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1C_IW_GRDH_1SDV_20260511T043903_20260511T043928_007601_00F700",
+      "datetime": "2026-05-11T04:39:16.243888Z",
+      "platform": "sentinel-1c",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        19.35422299999999,
+        37.319824,
+        22.614194999999995,
+        39.227501
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "thumbnail",
+        "safe-manifest",
+        "schema-noise-vh",
+        "schema-noise-vv",
+        "schema-product-vh",
+        "schema-product-vv",
+        "schema-calibration-vh",
+        "schema-calibration-vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/11/IW/DV/S1C_IW_GRDH_1SDV_20260511T043903_20260511T043928_007601_00F700_4226/measurement/iw-vv.tiff",
+      "vh_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/11/IW/DV/S1C_IW_GRDH_1SDV_20260511T043903_20260511T043928_007601_00F700_4226/measurement/iw-vh.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-grd&item=S1C_IW_GRDH_1SDV_20260511T043903_20260511T043928_007601_00F700&assets=vv&assets=vh&expression=vv%3Bvh%3Bvv%2Fvh&rescale=0%2C600&rescale=0%2C270&rescale=0%2C9&asset_as_band=True&tile_format=png&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-grd",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1C_IW_GRDH_1SDV_20260511T043903_20260511T043928_007601_00F700', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    },
+    {
+      "id": "S1C_IW_GRDH_1SDV_20260511T043838_20260511T043903_007601_00F700",
+      "datetime": "2026-05-11T04:38:51.244016Z",
+      "platform": "sentinel-1c",
+      "orbit_state": "descending",
+      "polarizations": null,
+      "product_type": null,
+      "mode": "IW",
+      "bbox": [
+        19.656993999999997,
+        38.823681,
+        22.995610999999997,
+        40.728069
+      ],
+      "available_assets": [
+        "vh",
+        "vv",
+        "thumbnail",
+        "safe-manifest",
+        "schema-noise-vh",
+        "schema-noise-vv",
+        "schema-product-vh",
+        "schema-product-vv",
+        "schema-calibration-vh",
+        "schema-calibration-vv",
+        "tilejson",
+        "rendered_preview"
+      ],
+      "vv_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/11/IW/DV/S1C_IW_GRDH_1SDV_20260511T043838_20260511T043903_007601_00F700_1EA1/measurement/iw-vv.tiff",
+      "vh_url": "https://sentinel1euwest.blob.core.windows.net/s1-grd/GRD/2026/5/11/IW/DV/S1C_IW_GRDH_1SDV_20260511T043838_20260511T043903_007601_00F700_1EA1/measurement/iw-vh.tiff",
+      "preview_url": "https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=sentinel-1-grd&item=S1C_IW_GRDH_1SDV_20260511T043838_20260511T043903_007601_00F700&assets=vv&assets=vh&expression=vv%3Bvh%3Bvv%2Fvh&rescale=0%2C600&rescale=0%2C270&rescale=0%2C9&asset_as_band=True&tile_format=png&format=png",
+      "damocles_node": {
+        "type": "SARScene",
+        "collection": "sentinel-1-grd",
+        "source": "planetary_computer",
+        "use_for": [
+          "vessel_detection",
+          "cfar",
+          "dark_vessel",
+          "change_detection"
+        ],
+        "extends": "existing GeospatialSensor in backend/sensors/geospatial.py",
+        "cypher_hint": "(:SARScene {id: 'S1C_IW_GRDH_1SDV_20260511T043838_20260511T043903_007601_00F700', platform: 'sentinel-1', orbit: 'descending'}) -[:DETECTED {algorithm: 'CFAR', confidence: 0.87}]->(:Vessel)"
+      }
+    }
+  ]
+}

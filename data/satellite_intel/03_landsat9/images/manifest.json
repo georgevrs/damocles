@@ -1,0 +1,50 @@
+{
+  "total_downloaded": 5,
+  "scenes": [
+    {
+      "id": "LC09_L2SP_185032_20260510_02_T1",
+      "date": "2026-05-10",
+      "cloud_cover_%": 96.2,
+      "files": {
+        "rgb_preview_png": "data/satellite_intel/03_landsat9/images/LC09_L2SP_185032_20260510_02_T1_RGB_preview.png",
+        "thermal_tirs_png": "data/satellite_intel/03_landsat9/images/LC09_L2SP_185032_20260510_02_T1_thermal_preview.png"
+      }
+    },
+    {
+      "id": "LC09_L2SP_185031_20260510_02_T1",
+      "date": "2026-05-10",
+      "cloud_cover_%": 68.2,
+      "files": {
+        "rgb_preview_png": "data/satellite_intel/03_landsat9/images/LC09_L2SP_185031_20260510_02_T1_RGB_preview.png",
+        "thermal_tirs_png": "data/satellite_intel/03_landsat9/images/LC09_L2SP_185031_20260510_02_T1_thermal_preview.png"
+      }
+    },
+    {
+      "id": "LC09_L2SP_180035_20260507_02_T1",
+      "date": "2026-05-07",
+      "cloud_cover_%": 0.1,
+      "files": {
+        "rgb_preview_png": "data/satellite_intel/03_landsat9/images/LC09_L2SP_180035_20260507_02_T1_RGB_preview.png",
+        "thermal_tirs_png": "data/satellite_intel/03_landsat9/images/LC09_L2SP_180035_20260507_02_T1_thermal_preview.png"
+      }
+    },
+    {
+      "id": "LC09_L2SP_180034_20260507_02_T1",
+      "date": "2026-05-07",
+      "cloud_cover_%": 0.2,
+      "files": {
+        "rgb_preview_png": "data/satellite_intel/03_landsat9/images/LC09_L2SP_180034_20260507_02_T1_RGB_preview.png",
+        "thermal_tirs_png": "data/satellite_intel/03_landsat9/images/LC09_L2SP_180034_20260507_02_T1_thermal_preview.png"
+      }
+    },
+    {
+      "id": "LC09_L2SP_180033_20260507_02_T1",
+      "date": "2026-05-07",
+      "cloud_cover_%": 2.5,
+      "files": {
+        "rgb_preview_png": "data/satellite_intel/03_landsat9/images/LC09_L2SP_180033_20260507_02_T1_RGB_preview.png",
+        "thermal_tirs_png": "data/satellite_intel/03_landsat9/images/LC09_L2SP_180033_20260507_02_T1_thermal_preview.png"
+      }
+    }
+  ]
+}

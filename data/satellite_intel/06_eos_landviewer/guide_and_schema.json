@@ -1,0 +1,60 @@
+{
+  "source": "EOS Data Analytics \u2014 LandViewer",
+  "url": "https://eos.com/landviewer/",
+  "api_url": "https://eos.com/products/satellite-data-api/",
+  "free_tier": true,
+  "api_key_required": true,
+  "registration_url": "https://eos.com/landviewer/",
+  "fetched_at": "2026-05-12T21:10:06.515721+00:00",
+  "what_it_gives": [
+    "Browser-based: search, visualise, download satellite imagery",
+    "Automatic calculation of spectral indices (NDVI, NDWI, EVI, SAVI)",
+    "Change detection comparison between two dates",
+    "Supported satellites: Sentinel-2, Landsat 7/8/9, MODIS, CBERS-4",
+    "Export: GeoTIFF, PNG, KMZ",
+    "Free tier: limited downloads per month"
+  ],
+  "paid_product": {
+    "name": "EOS RayVision",
+    "url": "https://eos.com/products/rayvision/",
+    "description": "Enterprise AI-powered monitoring \u2014 NOT free",
+    "use_cases": [
+      "Large-scale repeat monitoring (infrastructure, corridors)",
+      "Site activity tracking with ML alerts",
+      "Maritime and logistics visibility",
+      "Security monitoring \u2014 similar to what Damocles builds in-house"
+    ],
+    "why_damocles_avoids": "RayVision is a paid black-box SaaS. Damocles builds equivalent capability in-house (CFAR + foundation models) on sovereign infra \u2014 this is the moat vs commercial vendors."
+  },
+  "spectral_indices_schema": {
+    "NDVI": {
+      "formula": "(NIR-Red)/(NIR+Red)",
+      "use": "vegetation health, border clearance"
+    },
+    "NDWI": {
+      "formula": "(Green-NIR)/(Green+NIR)",
+      "use": "water body detection, Evros river level"
+    },
+    "EVI": {
+      "formula": "2.5*(NIR-Red)/(NIR+6*Red-7.5*Blue+1)",
+      "use": "dense vegetation"
+    },
+    "NDSI": {
+      "formula": "(Green-SWIR)/(Green+SWIR)",
+      "use": "snow cover, seasonal border access"
+    },
+    "NBR": {
+      "formula": "(NIR-SWIR)/(NIR+SWIR)",
+      "use": "burn severity after wildfire"
+    }
+  },
+  "damocles_integration": {
+    "recommendation": "Use free LandViewer browser for demo screenshot generation. For pipeline: use Sentinel Hub CDSE (already integrated) which provides the same imagery programmatically.",
+    "demo_workflow": [
+      "1. Open LandViewer, navigate to Evros",
+      "2. Select Sentinel-2 scene, apply NDWI",
+      "3. Compare two dates (e.g. before/after rainfall)",
+      "4. Export PNG \u2192 use as evidence in Damocles brief modal"
+    ]
+  }
+}

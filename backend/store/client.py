@@ -54,6 +54,14 @@ _RUNTIME_MIGRATIONS: tuple[str, ...] = (
         generated_at  TIMESTAMP NOT NULL,
         notes         VARCHAR
     )""",
+    # Retroactive fix: rows stored before the AIS cross-reference guard was
+    # removed stayed UNKNOWN forever. Tag them DARK so they render amber on
+    # the map instead of slate. Idempotent — subsequent runs update 0 rows.
+    "UPDATE raw_ais SET ais_status = 'dark' WHERE ais_status = 'unknown'",
+    # Set a baseline dark_score (0.7 = minimum with no risk-factor boosts)
+    # for any raw_sar row that was written before the post-cross-reference
+    # upsert was wired in. Idempotent — NULL rows only.
+    "UPDATE raw_sar SET dark_score = 0.7 WHERE dark_score IS NULL",
 )
 
 

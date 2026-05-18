@@ -1,0 +1,126 @@
+{
+  "source": "Bellingcat \u2014 Remote Sensing for OSINT",
+  "url": "https://bellingcat.github.io/RS4OSINT/",
+  "type": "Open methodology guide \u2014 curated tools & techniques",
+  "fetched_at": "2026-05-12T21:10:06.516965+00:00",
+  "relevance_to_damocles": "Bellingcat is the gold standard for open-source satellite OSINT. Their methodology is exactly what Damocles automates. Use this as justification for Damocles capabilities in the pitch.",
+  "tools_and_sources": {
+    "satellite_imagery": [
+      {
+        "name": "Sentinel Hub EO Browser",
+        "url": "https://browser.dataspace.copernicus.eu",
+        "free": true,
+        "use": "Primary tool \u2014 already in Damocles"
+      },
+      {
+        "name": "Google Earth Pro",
+        "url": "https://earth.google.com/web/",
+        "free": true,
+        "use": "Historical imagery timeline"
+      },
+      {
+        "name": "Zoom Earth",
+        "url": "https://zoom.earth",
+        "free": true,
+        "use": "Near-real-time composite imagery"
+      },
+      {
+        "name": "NASA Worldview",
+        "url": "https://worldview.earthdata.nasa.gov",
+        "free": true,
+        "use": "MODIS daily composite, fire alerts"
+      },
+      {
+        "name": "USGS Earth Explorer",
+        "url": "https://earthexplorer.usgs.gov",
+        "free": true,
+        "use": "Full Landsat archive download"
+      }
+    ],
+    "change_detection": [
+      {
+        "name": "GEE (Google Earth Engine)",
+        "url": "https://earthengine.google.com",
+        "free": true,
+        "note": "Free for research, requires registration",
+        "damocles_use": "Time-series NDVI/NDWI over Evros for Anticipate layer"
+      },
+      {
+        "name": "EO Browser Time Lapse",
+        "url": "https://browser.dataspace.copernicus.eu",
+        "free": true,
+        "note": "Browser-only, no API"
+      }
+    ],
+    "maritime_monitoring": [
+      {
+        "name": "MarineTraffic",
+        "url": "https://www.marinetraffic.com",
+        "free": "limited",
+        "damocles_use": "Cross-check with AISStream dark vessels"
+      },
+      {
+        "name": "Global Fishing Watch",
+        "url": "https://globalfishingwatch.org",
+        "free": true,
+        "damocles_use": "Fishing vessel anomalies in EEZ"
+      },
+      {
+        "name": "Windward",
+        "url": "https://windward.ai",
+        "free": false,
+        "note": "Paid \u2014 commercial maritime intelligence"
+      }
+    ],
+    "geolocation_verification": [
+      {
+        "name": "SunCalc",
+        "url": "https://suncalc.org",
+        "free": true,
+        "use": "Verify shadow angles in imagery to confirm date/time"
+      },
+      {
+        "name": "ShadowMap",
+        "url": "https://app.shadowmap.org",
+        "free": true,
+        "use": "3D shadow simulation for image authentication"
+      },
+      {
+        "name": "GeoSpy",
+        "url": "https://geospy.ai",
+        "free": "limited",
+        "use": "AI-powered image geolocation"
+      }
+    ]
+  },
+  "key_techniques": {
+    "change_detection_workflow": [
+      "1. Select AOI (area of interest) \u2014 e.g. Evros crossing point",
+      "2. Pull Sentinel-2 scenes: T0 (baseline) and T1 (current)",
+      "3. Compute NDWI diff \u2192 detect new water routes",
+      "4. Compute NDVI diff \u2192 detect vegetation clearance (human activity)",
+      "5. Flag anomalies > 2\u03c3 from 6-month baseline",
+      "6. Feed flagged pixels as CyberEvent nodes into Neo4j"
+    ],
+    "vessel_verification": [
+      "1. CFAR detects SAR blob",
+      "2. Cross-ref AIS \u2014 is MMSI broadcasting in same location?",
+      "3. If no AIS match: dark vessel candidate",
+      "4. Check Sentinel-2 optical for visual confirmation",
+      "5. Check MarineTraffic/Global Fishing Watch for history",
+      "6. Produce confidence score and provenance chain"
+    ],
+    "incident_corroboration": [
+      "1. Telegram/GDELT report of incident at location X",
+      "2. Pull nearest satellite scene within \u00b12 days",
+      "3. Before/after comparison on the reported location",
+      "4. If satellite confirms \u2192 HIGH confidence CompositeEvent",
+      "5. If satellite shows nothing \u2192 Devil's Advocate flags"
+    ]
+  },
+  "damocles_pitch_talking_points": [
+    "Damocles automates what Bellingcat analysts do manually in hours",
+    "The same change detection that took Bellingcat 3 days for Mariupol takes Damocles 90 seconds over the Aegean",
+    "Provenance chain (every claim to source pixel) = auditable Bellingcat method at scale"
+  ]
+}

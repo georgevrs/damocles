@@ -1,0 +1,91 @@
+{
+  "source": "Planet Labs",
+  "url": "https://www.planet.com/",
+  "api_docs": "https://developers.planet.com/docs/apis/",
+  "free_access": "Education & Research Program \u2014 apply at planet.com/science",
+  "approval_time": "Up to 3 weeks",
+  "free_quota": "3,000 km\u00b2/month PlanetScope + RapidEye basemaps",
+  "resolution": "PlanetScope: 3m/px | SkySat: 50cm/px",
+  "revisit_frequency": "Daily (PlanetScope constellation of 200+ satellites)",
+  "fetched_at": "2026-05-12T21:10:06.516111+00:00",
+  "why_relevant_for_damocles": "5-day Sentinel revisit is too slow for real-time border monitoring. Planet provides DAILY 3m imagery \u2014 much faster change detection. Critical for 'Anticipate' layer (predictive 48h heatmaps).",
+  "api_search_example": {
+    "endpoint": "https://api.planet.com/data/v1/quick-search",
+    "method": "POST",
+    "auth": "Basic auth \u2014 API key as username, empty password",
+    "body": {
+      "item_types": [
+        "PSScene"
+      ],
+      "filter": {
+        "type": "AndFilter",
+        "config": [
+          {
+            "type": "GeometryFilter",
+            "field_name": "geometry",
+            "config": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    26.0,
+                    41.0
+                  ],
+                  [
+                    27.0,
+                    41.0
+                  ],
+                  [
+                    27.0,
+                    42.0
+                  ],
+                  [
+                    26.0,
+                    42.0
+                  ],
+                  [
+                    26.0,
+                    41.0
+                  ]
+                ]
+              ]
+            }
+          },
+          {
+            "type": "DateRangeFilter",
+            "field_name": "acquired",
+            "config": {
+              "gte": "2026-04-01T00:00:00Z",
+              "lte": "2026-05-12T23:59:59Z"
+            }
+          },
+          {
+            "type": "RangeFilter",
+            "field_name": "cloud_cover",
+            "config": {
+              "lte": 0.1
+            }
+          }
+        ]
+      }
+    }
+  },
+  "sample_item_schema": {
+    "id": "20260509_091523_74_24d3",
+    "item_type": "PSScene",
+    "acquired": "2026-05-09T09:15:23Z",
+    "cloud_cover": 0.02,
+    "pixel_resolution": 3.125,
+    "satellite_id": "24d3",
+    "strip_id": "5882317",
+    "sun_azimuth": 142.3,
+    "sun_elevation": 61.8,
+    "view_angle": 2.1,
+    "assets_available": [
+      "ortho_analytic_4b",
+      "ortho_visual",
+      "ortho_udm2"
+    ]
+  },
+  "damocles_cypher_hint": "(:SatelliteScene {platform: 'PlanetScope', resolution_m: 3, revisit: 'daily'}) -[:MONITORS {frequency: 'daily'}]->(:AOI {name: 'Evros Border'})"
+}

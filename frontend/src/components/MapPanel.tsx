@@ -79,20 +79,52 @@ const GREECE_FC: FeatureCollection<Polygon> = {
 
 // ─── Source-point layers (kept from v1, with opacity now driven by store) ───
 
-function vesselLayer(opacity: number): CircleLayer {
+// Named check: vessel_name is a non-empty string
+const NAMED_EXPR = ["!=", ["coalesce", ["get", "vessel_name"], ""], ""] as const;
+
+// 3-state vessel colour:
+//   light-green → AIS broadcasting AND has a known name (identified)
+//   cyan        → AIS broadcasting, name unknown (not shown in legend but still renderable)
+//   slate       → SAR-detected, no matching AIS signal (dark / unconfirmed)
+const VESSEL_COLOR_EXPR = [
+  "case",
+  ["all", ["==", ["get", "ais_status"], "broadcasting"], NAMED_EXPR], "#4ade80",
+  ["==", ["get", "ais_status"], "broadcasting"],                       "#22d3ee",
+  "#94a3b8",
+] as const;
+
+function vesselLayerBroadcasting(opacity: number): CircleLayer {
   return {
-    id: "vessels", type: "circle", source: "vessels",
+    id: "vessels-broadcasting", type: "circle", source: "vessels",
+    filter: ["==", ["get", "ais_status"], "broadcasting"],
     paint: {
       "circle-radius": [
         "interpolate", ["linear"], ["coalesce", ["get", "length_m"], 0],
         0, 3, 50, 4, 150, 5.5, 300, 7,
       ],
-      "circle-color": [
-        "match", ["get", "ais_status"],
-        "dark", "#ef4444",
-        "broadcasting", "#22d3ee",
-        "#94a3b8",
+      "circle-color": VESSEL_COLOR_EXPR as unknown as string,
+      "circle-stroke-color": "#0b0f17",
+      "circle-stroke-width": 1,
+      "circle-opacity": [
+        "case",
+        ["boolean", ["feature-state", "active"], false], 1.0,
+        ["boolean", ["feature-state", "dimmed"], false], 0.18,
+        opacity,
       ],
+    },
+  };
+}
+
+function vesselLayerDark(opacity: number): CircleLayer {
+  return {
+    id: "vessels-dark", type: "circle", source: "vessels",
+    filter: ["!=", ["get", "ais_status"], "broadcasting"],
+    paint: {
+      "circle-radius": [
+        "interpolate", ["linear"], ["coalesce", ["get", "length_m"], 0],
+        0, 3, 50, 4, 150, 5.5, 300, 7,
+      ],
+      "circle-color": "#94a3b8",
       "circle-stroke-color": "#0b0f17",
       "circle-stroke-width": 1,
       "circle-opacity": [
@@ -347,7 +379,8 @@ export default function MapPanel({ className }: { className?: string }) {
   const activeVessel   = useDamocles((s) => s.activeVessel);
   const setActiveVessel = useDamocles((s) => s.setActiveVessel);
   const setActiveFlight = useDamocles((s) => s.setActiveFlight);
-  const layers         = useDamocles((s) => s.mapLayers);
+  const layers   = useDamocles((s) => s.mapLayers);
+  const setLayer = useDamocles((s) => s.setLayer);
 
   // Per-watch graph (vessels/news/composites markers)
   const { data: graph } = useQuery({
@@ -399,7 +432,7 @@ export default function MapPanel({ className }: { className?: string }) {
   const { data: standingVessels } = useQuery({
     queryKey: ["standing-vessels"],
     queryFn: () => fetchVessels({ hours: 24 * 14, limit: 2000 }),
-    enabled: layers.vessels.visible,
+    enabled: layers.vessels.visible || layers.sar.visible,
     refetchInterval: 30_000,
   });
 
@@ -511,7 +544,7 @@ export default function MapPanel({ className }: { className?: string }) {
     if (!mapReady) return;
     const map = mapRef.current?.getMap();
     if (!map) return;
-    const vesselLayers = ["vessels", "standing-vessels-circle"];
+    const vesselLayers = ["vessels-broadcasting", "vessels-dark", "standing-vessels-broadcasting", "standing-vessels-dark"];
     const flightLayers = ["flights-circle"];
     const aoiLayers    = ["aoi-ai-fill", "aoi-user-fill"];
     const allInteractive = [...flightLayers, ...vesselLayers, ...aoiLayers];
@@ -556,15 +589,17 @@ export default function MapPanel({ className }: { className?: string }) {
           id: String(f.id ?? props.node_id ?? ""),
           geometry: geom,
           properties: {
-            node_id:     String(props.node_id ?? f.id ?? ""),
-            node_type:   "Vessel",
-            label:       String(props.label ?? props.node_id ?? ""),
-            mmsi:        (props.mmsi as string | null) ?? null,
-            ts:          (props.ts as string | null) ?? null,
-            vessel_name: (props.vessel_name as string | null) ?? null,
-            flag:        (props.flag as string | null) ?? null,
-            length_m:    typeof props.length_m === "number" ? props.length_m : null,
-            ais_status:  (props.ais_status as string | null) ?? null,
+            node_id:           String(props.node_id ?? f.id ?? ""),
+            node_type:         "Vessel",
+            label:             String(props.label ?? props.node_id ?? ""),
+            mmsi:              (props.mmsi as string | null) ?? null,
+            ts:                (props.ts as string | null) ?? null,
+            vessel_name:       (props.vessel_name as string | null) ?? null,
+            flag:              (props.flag as string | null) ?? null,
+            length_m:          typeof props.length_m === "number" ? props.length_m : null,
+            ais_status:        (props.ais_status as string | null) ?? null,
+            confidence:        typeof props.confidence === "number" ? props.confidence : null,
+            dark_vessel_score: typeof props.dark_vessel_score === "number" ? props.dark_vessel_score : null,
           },
         });
         return;
@@ -802,9 +837,10 @@ export default function MapPanel({ className }: { className?: string }) {
             <Layer {...newsLayer(layers.news.opacity)} />
           </Source>
         )}
-        {layers.vessels.visible && (
+        {(layers.vessels.visible || layers.sar.visible) && (
           <Source id="vessels" type="geojson" data={fcs.vessels} promoteId="node_id">
-            <Layer {...vesselLayer(layers.vessels.opacity)} />
+            {layers.vessels.visible && <Layer {...vesselLayerBroadcasting(layers.vessels.opacity)} />}
+            {layers.sar.visible     && <Layer {...vesselLayerDark(layers.sar.opacity)} />}
             <Layer {...VESSEL_PULSE} />
           </Source>
         )}
@@ -812,26 +848,65 @@ export default function MapPanel({ className }: { className?: string }) {
         {/* Standing-scan vessels — independent of any active watch.
             Uses node_id as the promoted id so feature-state lookups don't
             collide with the per-watch vessels source above. */}
-        {layers.vessels.visible && standingVessels && (
+        {(layers.vessels.visible || layers.sar.visible) && standingVessels && (
           <Source id="standing-vessels" type="geojson" data={standingVessels} promoteId="node_id">
-            <Layer
-              id="standing-vessels-circle" type="circle" source="standing-vessels"
-              paint={{
-                "circle-radius": [
-                  "interpolate", ["linear"], ["coalesce", ["get", "length_m"], 0],
-                  0, 2.5, 50, 3.5, 150, 5, 300, 6.5,
-                ],
-                "circle-color": [
-                  "match", ["get", "ais_status"],
-                  "dark",         "#ef4444",
-                  "broadcasting", "#22d3ee",
-                  "#94a3b8",
-                ],
-                "circle-stroke-color": "#0b0f17",
-                "circle-stroke-width": 0.8,
-                "circle-opacity": layers.vessels.opacity * 0.8,
-              }}
-            />
+            {layers.vessels.visible && (
+              <Layer
+                id="standing-vessels-broadcasting" type="circle" source="standing-vessels"
+                filter={["==", ["get", "ais_status"], "broadcasting"]}
+                paint={{
+                  "circle-radius": [
+                    "interpolate", ["linear"], ["coalesce", ["get", "length_m"], 0],
+                    0, 2.5, 50, 3.5, 150, 5, 300, 6.5,
+                  ],
+                  "circle-color": VESSEL_COLOR_EXPR as unknown as string,
+                  "circle-stroke-color": "#0b0f17",
+                  "circle-stroke-width": 0.8,
+                  "circle-opacity": layers.vessels.opacity * 0.8,
+                }}
+              />
+            )}
+            {layers.sar.visible && (
+              <Layer
+                id="standing-vessels-dark" type="circle" source="standing-vessels"
+                filter={["!=", ["get", "ais_status"], "broadcasting"]}
+                paint={{
+                  "circle-radius": [
+                    "interpolate", ["linear"], ["coalesce", ["get", "length_m"], 0],
+                    0, 2.5, 50, 3.5, 150, 5, 300, 6.5,
+                  ],
+                  "circle-color": "#94a3b8",
+                  "circle-stroke-color": "#0b0f17",
+                  "circle-stroke-width": 0.8,
+                  "circle-opacity": layers.sar.opacity * 0.8,
+                }}
+              />
+            )}
+            {/* Vessel name labels — only shown for identified (broadcasting+named) vessels at zoom ≥ 8 */}
+            {layers.vessels.visible && (
+              <Layer
+                id="standing-vessels-label" type="symbol" source="standing-vessels"
+                minzoom={8}
+                filter={["all",
+                  ["==", ["get", "ais_status"], "broadcasting"],
+                  ["!=", ["coalesce", ["get", "vessel_name"], ""], ""],
+                ]}
+                layout={{
+                  "text-field":          ["get", "vessel_name"],
+                  "text-size":           10,
+                  "text-anchor":         "top",
+                  "text-offset":         [0, 0.9],
+                  "text-allow-overlap":  false,
+                  "text-font":           ["Open Sans Regular", "Arial Unicode MS Regular"],
+                }}
+                paint={{
+                  "text-color":      "#4ade80",
+                  "text-halo-color": "#0b0f17",
+                  "text-halo-width": 1.5,
+                  "text-opacity":    layers.vessels.opacity,
+                }}
+              />
+            )}
           </Source>
         )}
 
@@ -947,36 +1022,57 @@ export default function MapPanel({ className }: { className?: string }) {
       <MapDrawControl getMap={() => mapRef.current?.getMap() ?? null} />
 
       {/* Legend */}
-      <div className="pointer-events-none absolute right-2 bottom-8 z-20 space-y-0.5 rounded-md bg-panel-bg/85 px-2 py-1 text-[10px] backdrop-blur-sm">
-        <Legend dot="#22d3ee" label={t("legend.vessel.broadcasting")} />
-        <Legend dot="#ef4444" label={t("legend.vessel.dark")} />
-        <Legend dot="#f59e0b" label={t("legend.news")} />
-        <Legend dot="#10b981" label={t("legend.composite")} diamond />
-        <Legend dot="#f59e0b" label={t("legend.aoi.ai")} outline />
-        <Legend dot="#22d3ee" label={t("legend.aoi.user")} outline />
+      <div className="absolute right-2 bottom-8 z-20 space-y-1 rounded-md bg-panel-bg/85 px-2 py-1.5 text-[10px] backdrop-blur-sm">
+        <Legend dot="#4ade80" label={t("legend.vessel.identified")} visible={layers.vessels.visible}    onToggle={() => setLayer("vessels",    { visible: !layers.vessels.visible })} />
+        <Legend dot="#94a3b8" label={t("legend.vessel.dark")}        visible={layers.sar.visible}        onToggle={() => setLayer("sar",        { visible: !layers.sar.visible })} />
+        <Legend dot="#f59e0b" label={t("legend.news")}               visible={layers.news.visible}       onToggle={() => setLayer("news",       { visible: !layers.news.visible })} />
+        <Legend dot="#10b981" label={t("legend.composite")} diamond  visible={layers.composites.visible} onToggle={() => setLayer("composites", { visible: !layers.composites.visible })} />
+        <Legend dot="#f59e0b" label={t("legend.aoi.ai")}   outline   visible={layers.aoi_ai.visible}     onToggle={() => setLayer("aoi_ai",     { visible: !layers.aoi_ai.visible })} />
+        <Legend dot="#22d3ee" label={t("legend.aoi.user")} outline   visible={layers.aoi_user.visible}   onToggle={() => setLayer("aoi_user",   { visible: !layers.aoi_user.visible })} />
+        <Legend dot="#a78bfa" label={t("legend.flight")}             visible={layers.flight.visible}     onToggle={() => setLayer("flight",     { visible: !layers.flight.visible })} />
       </div>
     </div>
   );
 }
 
 function Legend({
-  dot, label, diamond, outline,
-}: { dot: string; label: string; diamond?: boolean; outline?: boolean }) {
+  dot, label, diamond, outline, visible, onToggle,
+}: {
+  dot: string; label: string; diamond?: boolean; outline?: boolean;
+  visible?: boolean; onToggle?: () => void;
+}) {
+  const on = visible !== false;
   return (
     <div className="flex items-center gap-1.5 text-panel-muted">
       <span
         className={
-          "inline-block h-2 w-2 " +
+          "inline-block h-2 w-2 shrink-0 transition-opacity " +
           (diamond ? "rotate-45 " : "rounded-full ") +
-          (outline ? "border" : "")
+          (outline ? "border " : "") +
+          (on ? "" : "opacity-30")
         }
-        style={
-          outline
-            ? { background: "transparent", borderColor: dot }
-            : { background: dot }
-        }
+        style={outline ? { background: "transparent", borderColor: dot } : { background: dot }}
       />
-      <span>{label}</span>
+      <span className={"flex-1 transition-opacity " + (on ? "" : "opacity-35")}>{label}</span>
+      {onToggle !== undefined && (
+        <button
+          type="button"
+          role="switch"
+          aria-checked={on}
+          onClick={onToggle}
+          className={
+            "relative ml-1 inline-flex h-3.5 w-6 shrink-0 cursor-pointer rounded-full transition-colors duration-200 " +
+            (on ? "bg-cyan-500/75" : "bg-panel-muted/25")
+          }
+        >
+          <span
+            className={
+              "absolute top-0.5 h-2.5 w-2.5 rounded-full bg-white shadow transition-transform duration-200 " +
+              (on ? "translate-x-3" : "translate-x-0.5")
+            }
+          />
+        </button>
+      )}
     </div>
   );
 }
